@@ -5,10 +5,57 @@ use Monolog\Logger;
 
 class Helpers {
 
+
+
 	// Check results
 	// if no data, return []
-	public static function checkResults($results){
- 		return isset($results['warning'])? NULL: $results;
+	public static function createResults($results, $select){
+ 		if (count($results)) {
+	        $data = [];
+
+	        foreach ($results as $item) {
+	            $attributes = [];
+
+	            foreach ($select as $field => $attribute) {
+	                $split_lookup = explode(';#', isset($item[$field])? $item[$field]: '');
+
+	                $attributes[$attribute] = $split_lookup[0];
+	            }
+
+	            $data[] = $attributes;
+	        }
+
+	        $results = $data;
+	    }
+
+        return $results;
+ 	}
+
+ 	/**
+ 	 * [getLookupFromArray description]
+ 	 * @param  [type] $data   [description]
+ 	 * @param  [type] $column [description]
+ 	 * @param  [type] $value  [description]
+ 	 * @return false | string
+ 	 */
+ 	public static function getLookupFromArray($data, $column, $value){
+ 		$key = array_search($value, array_column($data, $column));
+
+ 		return $key? $data[$key]: $key;
+ 	}
+
+ 	public static function checkResults($results){
+ 		return isset($results['warning'])? []: $results;
+ 	}
+
+ 	// Create LOV
+	public static function createLOV($list, $key, $value){
+ 		$lov = [];
+ 		foreach ($list as $item) {
+ 			$lov[$item[$key]] = $item[$value];
+ 		}
+
+ 		return $lov;
  	}
 
 	// Create an access token for API
@@ -54,7 +101,7 @@ class Helpers {
  	}
 
  	// Create response
- 	public static function createResponse ($status, $messsage, $data = null) {
+ 	public static function createResponse ($status, $messsage, $data = []) {
 		$response = [
  			"meta" => [
  				"status" => $status,
@@ -63,7 +110,7 @@ class Helpers {
  		];
 		
 		// Add response data
-		if ($data) {
+		if (count($data)) {
 			$response['data'] = $data;
 		}
 
