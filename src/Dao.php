@@ -65,6 +65,8 @@ class Dao {
             $list_surat_tugas = $list_surat_tugas->and_where('AkhirPeriode','<=',\Thybag\SharepointApi::dateTime($request->getQueryParam('akhir_periode')));
         if ($request->getQueryParam('nomor_surat_tugas')) 
             $list_surat_tugas = $list_surat_tugas->and_where('NomorSuratTugas','contains', $request->getQueryParam('nomor_surat_tugas'));
+        if ($request->getQueryParam('lokasi')) 
+            $list_surat_tugas = $list_surat_tugas->and_where('Lokasi','contains', $request->getQueryParam('lokasi'));
         
         $list_surat_tugas = Helpers::createLOV($list_surat_tugas->get(), $select);
         
@@ -228,7 +230,8 @@ class Dao {
 
             if ( !$lookup_surat_tugas && ($request->getQueryParam('awal_periode') 
                 || $request->getQueryParam('akhir_periode') 
-                || $request->getQueryParam('nomor_surat_tugas')))
+                || $request->getQueryParam('nomor_surat_tugas')
+                || $request->getQueryParam('lokasi')))
                 continue;
 
             $lookup_tim_surat = isset($list_tim_surat[$lookup_surat_tugas['id_surat_tugas']])? $list_tim_surat[$lookup_surat_tugas['id_surat_tugas']]: false;
