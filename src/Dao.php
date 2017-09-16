@@ -241,7 +241,10 @@ class Dao {
             if (!$pic && $request->getQueryParam('pic')) continue;
 
             $jenis_pemeriksaan = isset($list_jenis_pemeriksaan[$lookup_surat_tugas['id_jenis_pemeriksaan']])? $list_jenis_pemeriksaan[$lookup_surat_tugas['id_jenis_pemeriksaan']]['jenis_pemeriksaan']: "";
+            if (!$jenis_pemeriksaan) return [];
+            
             $tema_pengawasan = isset($list_tema_pengawasan[$lookup_surat_tugas['id_tema_pengawasan']])? $list_tema_pengawasan[$lookup_surat_tugas['id_tema_pengawasan']]['tema_pengawasan']: "";
+            if (!$tema_pengawasan) return [];
 
             $data[] = [
                 'id_shp_pihak' => $shp_pihak['id_shp_pihak'],
