@@ -21,67 +21,32 @@ class Dao {
         $this->sp_client->lowercaseIndexs(FALSE);
     }
 
-    public function getAccount() {
-        // return $this->sp_client->read('MasterSuratTugas', 10, ['TemaPengawasan' => '8']); 
-        // $sp->query('list of pets')->raw_where('<Eq><FieldRef Name="Title" /><Value Type="Text">Hello World</Value></Eq>')->limit(10)->get();
-        return $this->master_data->getTemaPengawasan();
-    }
-
     public function getMonitoringTanggapan($request) {
-        // $perusahaan = Helpers::checkResults($this->getPerusahaan($request->getQueryParam('perusahaan')));
-        // $jenis_pemeriksaan = Helpers::checkResults($this->getJenisPemeriksaan($request->getQueryParam('jenis_pemeriksaan')));
-        // $jenis_pemeriksaan = Helpers::createLOV($jenis_pemeriksaan, 'ID', 'JenisPemeriksaan');
-        // $tema_pengawasan = Helpers::checkResults($this->getTemaPengawasan($request->getQueryParam('tema_pengawasan')));
-        // $tema_pengawasan = Helpers::createLOV($tema_pengawasan, 'ID', 'TemaPengawasan');
-        // $user_account = Helpers::checkResults($this->getUserAccount($request->getQueryParam('user_account')));
-        // $pic = Helpers::checkResults($this->getPIC());
-
-        // return $this->sampleJSON($request);
-        // 
-        // // Get DPLE shp
-        // $select = [
-        //     'ID' => 'id_shp',
-        //     'MasterSuratTugas' => 'id_surat_tugas',
-        //     'NomorSurat' => 'nomor_surat_ojk'
-        // ];
-
-        // $filter = '<Contains><FieldRef Name="NomorSurat" /><Value Type="Text">' . $request->getQueryParam('nomor_surat_ojk') . '</Value></Contains>';
-        // $shp = $this->getListData('DPLEshp', $select, $filter);
-        // // $date = \Thybag\SharepointApi::dateTime("21-12-2012"); 
-        // // echo $date;
-        // // die();
-        // $select = [
-        //     'ID' => 'id_surat_tugas',
-        //     'NomorSuratTugas' => 'nomor_surat_tugas',
-        //     'AwalPeriode' => 'awal_periode',
-        //     'AkhirPeriode' => 'akhir_periode',
-        //     'ProfilPihakInstitusi_Nama' => 'id_perusahaan',
-        // ];
         
-        // // Filter data SHP
-        // $count = 1;
-        // $filter = '';
-        // if ($request->getQueryParam('awal_periode') && $request->getQueryParam('akhir_periode')) {
-        //     $count++;
-        //     $filter .= '<Geq><FieldRef Name="AwalPeriode" /><Value Type="DateTime">' . \Thybag\SharepointApi::dateTime($request->getQueryParam('awal_periode')) . '</Value></Geq>';
-        // } else if ($request->getQueryParam('awal_periode') || $request->getQueryParam('akhir_periode')) {
-        //     $count++;
-        //     $filter .= '<Geq><FieldRef Name="AwalPeriode" /><Value Type="DateTime">' . \Thybag\SharepointApi::dateTime($request->getQueryParam('awal_periode')) . '</Value></Geq>';
-        // }
+        // LOV jenis pemeriksaan
+        $select = [
+            'ID' => 'id_jenis_pemeriksaan',
+            'JenisPemeriksaan' => 'jenis_pemeriksaan'
+        ];
 
-        // if ($request->getQueryParam('nomor_surat_tugas')) {
-        //     $count++;
-        //     $filter .= '<Contains><FieldRef Name="NomorSuratTugas" /><Value Type="Text">' . $request->getQueryParam('nomor_surat_tugas') . '</Value></Contains>';
-        // }
+        $jenis_pemeriksaan = $this->sp_client
+            ->query('MasterJenisPemeriksaan')
+            ->fields(array_keys($select));
+            
+        $jenis_pemeriksaan = Helpers::createLOV($jenis_pemeriksaan->get(), $select);
 
-        // $filter .= '<Eq><FieldRef Name="Direktorat" /><Value Type="Text">DPLE</Value></Eq>';
+        // LOV tema pengawasan
+        $select = [
+            'ID' => 'id_tema_pengawasan',
+            'TemaPengawasan' => 'tema_pengawasan'
+        ];
 
-        // if ($count > 1) {
-        //     $filter = '<And>' . $filter . '</And>';
-        // }
+        $tema_pengawasan = $this->sp_client
+                ->query('MasterTemaPengawasan')
+                ->fields(array_keys($select))
+                ->get();
+        $tema_pengawasan = Helpers::createLOV($tema_pengawasan, $select);
 
-        // $shp = $this->getListData('MasterSuratTugas', $select, $filter);
-        
         // Filter surat tugas
         $select = [
             'ID' => 'id_surat_tugas',
@@ -89,6 +54,9 @@ class Dao {
             'AwalPeriode' => 'awal_periode',
             'AkhirPeriode' => 'akhir_periode',
             'ProfilPihakInstitusi_Nama' => 'id_perusahaan',
+            'TemaPengawasan' => 'id_tema_pengawasan',
+            'JenisPemeriksaan' => 'id_jenis_pemeriksaan',
+            'Lokasi' => 'lokasi',
         ];
 
         $surat_tugas = $this->sp_client
@@ -105,8 +73,9 @@ class Dao {
             $surat_tugas = $surat_tugas->and_where('AkhirPeriode','<=',\Thybag\SharepointApi::dateTime($request->getQueryParam('akhir_periode')));
         if ($request->getQueryParam('nomor_surat_tugas')) 
             $surat_tugas = $surat_tugas->and_where('NomorSuratTugas','contains', $request->getQueryParam('nomor_surat_tugas'));
-        $surat_tugas = Helpers::createResults(Helpers::checkResults($surat_tugas->get()), $select);
-
+        
+        $surat_tugas = Helpers::createLOV($surat_tugas->get(), $select);
+        
         // Filter SHP
         $select = [
             'ID' => 'id_shp',
@@ -121,7 +90,7 @@ class Dao {
 
         if ($request->getQueryParam('nomor_surat_ojk')) 
             $shp = $shp->and_where('NomorSurat','contains',$request->getQueryParam('nomor_surat_ojk'));
-        $shp = Helpers::createResults(Helpers::checkResults($shp->get()), $select);
+        $shp = Helpers::createLOV($shp->get(), $select);
 
         // Filter PIC
         $select = [
@@ -137,12 +106,12 @@ class Dao {
             ->and_where('UserAccount', 'not_null', '')
             ->and_where('SuratTugas', 'not_null', '');
 
-        $pic = Helpers::createResults(Helpers::checkResults($pic->get()), $select);
+        $pic = Helpers::createLOV($pic->get(), $select, "SuratTugas");
 
         // Filter UserAccount
         $select = [
             'ID' => 'id_user_account',
-            'NamaLengkap' => 'pic',
+            'NamaLengkap' => 'nama_lengkap',
         ];
 
         $user_account = $this->sp_client
@@ -152,7 +121,7 @@ class Dao {
         if ($request->getQueryParam('pic')) 
             $user_account = $user_account->where('NamaLengkap','contains', $request->getQueryParam('pic'));
 
-        $user_account = Helpers::createResults(Helpers::checkResults($user_account->get()), $select);
+        $user_account = Helpers::createLOV($user_account->get(), $select);
 
         // Filter Temuan
         $select = [
@@ -172,125 +141,34 @@ class Dao {
         if ($request->getQueryParam('temuan')) 
             $temuan = $temuan->and_where('Temuan','contains', $request->getQueryParam('temuan'));
 
-        $temuan = Helpers::createResults(Helpers::checkResults($temuan->get()), $select);
+        $temuan = Helpers::createLOV($temuan->get(), $select, "DPLEshp");
 
+        // return $pic;
         // Create structure data
-        // $data = [];
-        // foreach ($shp as $item) {
-        //     $lookup_surat_tugas = Helpers::getLookupFromArray($surat_tugas, 'id_surat_tugas', $item['id_surat_tugas']);
-        //     $lookup_temuan = Helpers::getLookupFromArray($temuan, 'id_shp', $item['id_shp']);
-        //     $lookup_pic = Helpers::getLookupFromArray($pic, 'id_surat_tugas', $item['id_surat_tugas']);
+        $data = [];
+        foreach ($shp as $id_shp => $item) {
+            $lookup_surat_tugas = isset($surat_tugas[$item['id_surat_tugas']])? $surat_tugas[$item['id_surat_tugas']]: false;
+            $lookup_temuan = isset($temuan[$id_shp])? $temuan[$id_shp]: false;
 
-        //     $attr_pic = "";
-        //     if ($lookup_pic) {
-        //         $lookup_user_account = Helpers::getLookupFromArray($user_account, 'id_user_account', $lookup_pic['id_user_account']);
-        //         $attr_pic = $lookup_user_account? $lookup_user_account['pic']: '';
-        //     }
+            $lookup_tim_surat_tugas = $lookup_surat_tugas? isset($pic[$lookup_surat_tugas["id_surat_tugas"]])? $pic[$lookup_surat_tugas["id_surat_tugas"]]: false: false;
+            $pic = $lookup_tim_surat_tugas? $user_account[$lookup_tim_surat_tugas["id_user_account"]]["nama_lengkap"]: "";
 
-        //     $data[] = [
-        //         'id_shp' => $item['id_shp'],
-        //         'id_surat_tugas' => $item['id_surat_tugas'],
-        //         'nomor_surat_ojk' => $item['nomor_surat_ojk'],
-        //         'nomor_surat_tugas' => ($lookup_surat_tugas? $lookup_surat_tugas['nomor_surat_tugas']: ''),
-        //         'id_surat_tugas_2' => $lookup_surat_tugas['id_surat_tugas'],
-        //         'temuan' => ($lookup_temuan? $lookup_temuan['temuan']: ''),
-        //         'pic' => $attr_pic
-        //         // 'id_shp' => $item['id_shp'],
-        //         // 'id_shp' => $item['id_shp'],
-        //     ];
-        // }
+            $data[] = [
+                'id_shp' => $id_shp,
+                'id_surat_tugas' => $item['id_surat_tugas'],
+                'nomor_surat_ojk' => $item['nomor_surat_ojk'],
+                'nomor_surat_tugas' => ($lookup_surat_tugas? $lookup_surat_tugas['nomor_surat_tugas']: ''),
+                'temuan' => ($lookup_temuan? $lookup_temuan['temuan']: ''),
+                'awal_periode' => ($lookup_surat_tugas? $lookup_surat_tugas['awal_periode']: ''),
+                'akhir_periode' => ($lookup_surat_tugas? $lookup_surat_tugas['akhir_periode']: ''),
+                'pic' => $pic,
+                'jenis_pemeriksaan'=> $lookup_surat_tugas? $jenis_pemeriksaan[$lookup_surat_tugas['id_jenis_pemeriksaan']]['jenis_pemeriksaan']: '',
+                'tema_pengawasan' => $lookup_surat_tugas? $tema_pengawasan[$lookup_surat_tugas['id_tema_pengawasan']]['tema_pengawasan']: '',
+                'lokasi' => ($lookup_surat_tugas? $lookup_surat_tugas['lokasi']: '')
+            ];
+        }
         
-        return $surat_tugas;
-    }
-
-    public function getTemaPengawasan($tema_pengawasan = null) {
-        $list_name = 'MasterTemaPengawasan';
-        $fields = ['ID', 'TemaPengawasan'];
-        $result = [];
-
-        if ($tema_pengawasan) {
-            return $this->sp_client
-                ->query($list_name)
-                ->fields($fields)
-                ->raw_where('<Contains><FieldRef Name="TemaPengawasan" /><Value Type="Text">' . $tema_pengawasan . '</Value></Contains>')->get();
-
-        } else {
-            return $this->sp_client
-                ->query($list_name)
-                ->fields($fields)
-                ->get();            
-        }
-    }
-
-    public function getPIC() {
-        $list_name = 'TimSuratTugas';
-        $fields = ['ID', 'UserAccount', 'SuratTugas'];
-
-        return $this->sp_client
-            ->query($list_name)
-            ->fields($fields)
-            ->raw_where('<And>
-                <Contains><FieldRef Name="PIC" /><Value Type="Boolean">Yes</Value></Contains>
-                <IsNotNull><FieldRef Name="SuratTugas" /></IsNotNull>
-            </And>')
-            ->get();
-    }
-
-    public function getPerusahaan($perusahaan = null) {
-        $list_name = 'ProfilPihakInstitusi';
-        $fields = ['ID', 'Nama'];
-
-        if ($perusahaan) {
-            return $this->sp_client
-                ->query($list_name)
-                ->fields($fields)
-                ->raw_where('<Contains><FieldRef Name="Nama" /><Value Type="Text">' . $perusahaan . '</Value></Contains>')
-                ->get();
-
-        } else {
-            return $this->sp_client
-                ->query($list_name)
-                ->fields($fields)
-                ->get();            
-        }
-    }
-
-    public function getJenisPemeriksaan($jenis_pemeriksaan = null) {
-        $list_name = 'MasterJenisPemeriksaan';
-        $fields = ['ID', 'JenisPemeriksaan'];
-
-        if ($jenis_pemeriksaan) {
-            return $this->sp_client
-                ->query($list_name)
-                ->fields($fields)
-                ->raw_where('<Contains><FieldRef Name="JenisPemeriksaan" /><Value Type="Text">' . $jenis_pemeriksaan . '</Value></Contains>')
-                ->get();
-
-        } else {
-            return $this->sp_client
-                ->query($list_name)
-                ->fields($fields)
-                ->get();            
-        }
-    }
-
-    public function getUserAccount($nama = null) {
-        $list_name = 'UserAccount';
-        $fields = ['ID', 'NamaLengkap'];
-
-        if ($nama) {
-            return $this->sp_client
-                ->query($list_name)
-                ->fields($fields)
-                ->raw_where('<Contains><FieldRef Name="NamaLengkap" /><Value Type="Text">' . $nama . '</Value></Contains>')
-                ->get();
-
-        } else {
-            return $this->sp_client
-                ->query($list_name)
-                ->fields($fields)
-                ->get();            
-        }
+        return $data;
     }
 
     public function sampleJSON($request) {

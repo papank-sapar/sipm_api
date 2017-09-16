@@ -33,15 +33,21 @@ class Helpers {
 
  	/**
  	 * [getLookupFromArray description]
- 	 * @param  [type] $data   [description]
+ 	 * @param  [type] $list   [description]
  	 * @param  [type] $column [description]
  	 * @param  [type] $value  [description]
- 	 * @return false | string
+ 	 * @return false | associative array
  	 */
- 	public static function getLookupFromArray($data, $column, $value){
- 		$key = array_search($value, array_column($data, $column));
+ 	public static function getLookupFromArray($list, $column, $value){
+ 		// $key = array_search($value, array_column($list, $column));
+ 		foreach ($list as $item) {
+ 			// echo 'surat_tugas : ' . $item[$column];
+ 			if ($item[$column] === $value) {
+ 				return $item;
+ 			}
+ 		}
 
- 		return $key? $data[$key]: $key;
+ 		return false;
  	}
 
  	public static function checkResults($results){
@@ -49,11 +55,31 @@ class Helpers {
  	}
 
  	// Create LOV
-	public static function createLOV($list, $key, $value){
+	public static function createLOV($list, $column, $table_key = "ID"){
  		$lov = [];
+
+ 		$list = isset($list['warning'])? []: $list;
+
+ 		// If no data, return []
+ 		if (!count($list)) return [];
+
  		foreach ($list as $item) {
- 			$lov[$item[$key]] = $item[$value];
+ 			$attributes = [];
+
+ 			foreach ($column as $table_column => $attribute) {
+ 				// if ($table_column !== $table_key) {
+
+ 					$split_lookup = explode(';#', isset($item[$table_column])? $item[$table_column]: '');
+
+	                $attributes[$attribute] = $split_lookup[0];
+ 				// }
+ 			}
+
+ 			$split_key = explode(';#', isset($item[$table_key])? $item[$table_key]: '');
+
+ 			$lov[$split_key[0]] = $attributes;
  		}
+
 
  		return $lov;
  	}

@@ -15,14 +15,25 @@ class ReportCtrl {
     }
 
     public function monitoringTanggapan($request, $response, $args) {
-        $report = $this->dao->getMonitoringTanggapan($request);
-        return $response->withJson(
-            Helpers::createResponse(
-                ERR_SERVER_SUCCESS, 
-                "Success", 
-                $report
-            )
-        );
+        try {
+            $report = $this->dao->getMonitoringTanggapan($request);
+
+            return $response->withJson(
+                Helpers::createResponse(
+                    ERR_SERVER_SUCCESS, 
+                    "Success", 
+                    $report
+                )
+            );
+        } catch (Exception $e) {
+            return $response->withJson(
+                Helpers::createResponse(
+                    ERR_SERVER_ERROR, 
+                    $e, 
+                    []
+                )
+            );
+        }
     }
 
     public function monitoring($request, $response, $args) {
