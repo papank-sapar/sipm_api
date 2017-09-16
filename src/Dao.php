@@ -32,7 +32,7 @@ class Dao {
         $jenis_pemeriksaan = $this->sp_client
             ->query('MasterJenisPemeriksaan')
             ->fields(array_keys($select));
-            
+
         $jenis_pemeriksaan = Helpers::createLOV($jenis_pemeriksaan->get(), $select);
 
         // LOV tema pengawasan
@@ -150,8 +150,14 @@ class Dao {
             $lookup_surat_tugas = isset($surat_tugas[$item['id_surat_tugas']])? $surat_tugas[$item['id_surat_tugas']]: false;
             $lookup_temuan = isset($temuan[$id_shp])? $temuan[$id_shp]: false;
 
-            $lookup_tim_surat_tugas = $lookup_surat_tugas? isset($pic[$lookup_surat_tugas["id_surat_tugas"]])? $pic[$lookup_surat_tugas["id_surat_tugas"]]: false: false;
-            $pic = $lookup_tim_surat_tugas? $user_account[$lookup_tim_surat_tugas["id_user_account"]]["nama_lengkap"]: "";
+            $pic_name = "";
+            
+            // Mencari tim surat tugas
+            if ($lookup_surat_tugas) {
+                if (isset($pic[$lookup_surat_tugas['id_surat_tugas']])) {  
+                    $pic_name = $user_account[$pic[$lookup_surat_tugas['id_surat_tugas']]['id_user_account']]["nama_lengkap"];
+                }
+            }
 
             $data[] = [
                 'id_shp' => $id_shp,
@@ -161,7 +167,7 @@ class Dao {
                 'temuan' => ($lookup_temuan? $lookup_temuan['temuan']: ''),
                 'awal_periode' => ($lookup_surat_tugas? $lookup_surat_tugas['awal_periode']: ''),
                 'akhir_periode' => ($lookup_surat_tugas? $lookup_surat_tugas['akhir_periode']: ''),
-                'pic' => $pic,
+                'pic' => $pic_name,
                 'jenis_pemeriksaan'=> $lookup_surat_tugas? $jenis_pemeriksaan[$lookup_surat_tugas['id_jenis_pemeriksaan']]['jenis_pemeriksaan']: '',
                 'tema_pengawasan' => $lookup_surat_tugas? $tema_pengawasan[$lookup_surat_tugas['id_tema_pengawasan']]['tema_pengawasan']: '',
                 'lokasi' => ($lookup_surat_tugas? $lookup_surat_tugas['lokasi']: '')
