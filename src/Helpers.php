@@ -44,12 +44,8 @@ class Helpers {
  			$attributes = [];
 
  			foreach ($column as $table_column => $attribute) {
- 				// if ($table_column !== $table_key) {
-
  					$split_lookup = explode(';#', isset($item[$table_column])? $item[$table_column]: '');
-
-	                $attributes[$attribute] = $split_lookup[0];
- 				// }
+					$attributes[$attribute] = $split_lookup[0];
  			}
 
  			$split_key = explode(';#', isset($item[$table_key])? $item[$table_key]: '');

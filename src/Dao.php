@@ -22,30 +22,25 @@ class Dao {
     }
 
     public function getMonitoringTanggapan($request) {
-        
-        // LOV jenis pemeriksaan
+
+        // Filter Perusahaan
         $select = [
-            'ID' => 'id_jenis_pemeriksaan',
-            'JenisPemeriksaan' => 'jenis_pemeriksaan'
+            'ID' => 'id_profil',
+            'NamaPihak' => 'perusahaan',
         ];
 
-        $jenis_pemeriksaan = $this->sp_client
-            ->query('MasterJenisPemeriksaan')
+        $list_perusahaan = $this->sp_client
+            ->query('MasterProfil')
             ->fields(array_keys($select));
+        $list_perusahaan = $list_perusahaan->where("JenisPihak", "=", "Perusahaan");
 
-        $jenis_pemeriksaan = Helpers::createLOV($jenis_pemeriksaan->get(), $select);
+        if ($request->getQueryParam('perusahaan')) {
+            $list_perusahaan = $list_perusahaan->and_where('NamaPihak','contains', $request->getQueryParam('perusahaan'));
+        }
 
-        // LOV tema pengawasan
-        $select = [
-            'ID' => 'id_tema_pengawasan',
-            'TemaPengawasan' => 'tema_pengawasan'
-        ];
+        $list_perusahaan = Helpers::createLOV($list_perusahaan->get(), $select);
 
-        $tema_pengawasan = $this->sp_client
-                ->query('MasterTemaPengawasan')
-                ->fields(array_keys($select))
-                ->get();
-        $tema_pengawasan = Helpers::createLOV($tema_pengawasan, $select);
+        if ($request->getQueryParam('perusahaan') && !count($list_perusahaan)) return [];
 
         // Filter surat tugas
         $select = [
@@ -53,29 +48,97 @@ class Dao {
             'NomorSuratTugas' => 'nomor_surat_tugas',
             'AwalPeriode' => 'awal_periode',
             'AkhirPeriode' => 'akhir_periode',
-            'ProfilPihakInstitusi_Nama' => 'id_perusahaan',
             'TemaPengawasan' => 'id_tema_pengawasan',
             'JenisPemeriksaan' => 'id_jenis_pemeriksaan',
             'Lokasi' => 'lokasi',
         ];
 
-        $surat_tugas = $this->sp_client
+        $list_surat_tugas = $this->sp_client
             ->query('MasterSuratTugas')
             ->fields(array_keys($select));
-        $surat_tugas = $surat_tugas
-            ->where('Direktorat','=', 'DPLE')
-            ->and_where('TemaPengawasan','not_null', '')
-            ->and_where('JenisPemeriksaan','not_null', '');
+        $list_surat_tugas = $list_surat_tugas
+            ->where('Direktorat','=', 'DPLE');
 
         if ($request->getQueryParam('awal_periode')) 
-            $surat_tugas = $surat_tugas->and_where('AwalPeriode','>=',\Thybag\SharepointApi::dateTime($request->getQueryParam('awal_periode')));
+            $list_surat_tugas = $list_surat_tugas->and_where('AwalPeriode','>=',\Thybag\SharepointApi::dateTime($request->getQueryParam('awal_periode')));
         if ($request->getQueryParam('akhir_periode')) 
-            $surat_tugas = $surat_tugas->and_where('AkhirPeriode','<=',\Thybag\SharepointApi::dateTime($request->getQueryParam('akhir_periode')));
+            $list_surat_tugas = $list_surat_tugas->and_where('AkhirPeriode','<=',\Thybag\SharepointApi::dateTime($request->getQueryParam('akhir_periode')));
         if ($request->getQueryParam('nomor_surat_tugas')) 
-            $surat_tugas = $surat_tugas->and_where('NomorSuratTugas','contains', $request->getQueryParam('nomor_surat_tugas'));
+            $list_surat_tugas = $list_surat_tugas->and_where('NomorSuratTugas','contains', $request->getQueryParam('nomor_surat_tugas'));
         
-        $surat_tugas = Helpers::createLOV($surat_tugas->get(), $select);
+        $list_surat_tugas = Helpers::createLOV($list_surat_tugas->get(), $select);
         
+        if (($request->getQueryParam('awal_periode') || $request->getQueryParam('nomor_surat_tugas') || $request->getQueryParam('akhir_periode')) && !count($list_surat_tugas)) return [];
+
+        // Filter UserAccount
+        $select = [
+            'ID' => 'id_user_account',
+            'NamaLengkap' => 'nama_lengkap',
+        ];
+
+        $list_user_account = $this->sp_client
+            ->query('UserAccount')
+            ->fields(array_keys($select));
+
+        if ($request->getQueryParam('pic')) 
+            $list_user_account = $list_user_account->where('NamaLengkap','contains', $request->getQueryParam('pic'));
+
+        $list_user_account = Helpers::createLOV($list_user_account->get(), $select);
+        
+        if ($request->getQueryParam('pic') && !count($list_user_account)) return [];
+        
+        // LOV jenis pemeriksaan
+        $select = [
+            'ID' => 'id_jenis_pemeriksaan',
+            'JenisPemeriksaan' => 'jenis_pemeriksaan'
+        ];
+
+        $list_jenis_pemeriksaan = $this->sp_client
+            ->query('MasterJenisPemeriksaan')
+            ->fields(array_keys($select));
+        
+        if ($request->getQueryParam('jenis_pemeriksaan')){
+            $list_jenis_pemeriksaan = $list_jenis_pemeriksaan->where('JenisPemeriksaan', 'contains', $request->getQueryParam('jenis_pemeriksaan'));
+        }
+
+        $list_jenis_pemeriksaan = Helpers::createLOV($list_jenis_pemeriksaan->get(), $select);
+
+        if ($request->getQueryParam('jenis_pemeriksaan') && !count($list_jenis_pemeriksaan)) return [];
+
+        // LOV tema pengawasan
+        $select = [
+            'ID' => 'id_tema_pengawasan',
+            'TemaPengawasan' => 'tema_pengawasan'
+        ];
+
+        $list_tema_pengawasan = $this->sp_client
+                ->query('MasterTemaPengawasan')
+                ->fields(array_keys($select));
+        
+        if ($request->getQueryParam('tema_pengawasan')){
+            $list_tema_pengawasan = $list_tema_pengawasan->where('TemaPengawasan', 'contains', $request->getQueryParam('tema_pengawasan'));
+        }
+
+        $list_tema_pengawasan = Helpers::createLOV($list_tema_pengawasan->get(), $select);
+
+        if ($request->getQueryParam('tema_pengawasan') && !count($list_tema_pengawasan)) return [];
+
+        // Filter SHP Pihak
+        $select = [
+            'ID' => 'id_shp_pihak',
+            'MasterProfil' => 'id_profil',
+            'DPLEKesimpulanPihak' => 'id_kesimpulan_pihak',
+        ];
+
+        $list_shp_pihak = $this->sp_client
+            ->query('DPLESHPPihak')
+            ->fields(array_keys($select));
+        $list_shp_pihak = $list_shp_pihak->where('DPLEKesimpulanPihak','not_null', '');
+
+        $list_shp_pihak = Helpers::createLOV($list_shp_pihak->get(), $select);
+
+        if ($request->getQueryParam('nomor_surat_ojk') && !count($list_shp_pihak)) return [];
+
         // Filter SHP
         $select = [
             'ID' => 'id_shp',
@@ -83,14 +146,18 @@ class Dao {
             'NomorSurat' => 'nomor_surat_ojk',
         ];
 
-        $shp = $this->sp_client
+        $list_shp = $this->sp_client
             ->query('DPLEshp')
             ->fields(array_keys($select));
-        $shp = $shp->where('MasterSuratTugas','not_null', '');
+        $list_shp = $list_shp->where('MasterSuratTugas','not_null', '');
 
-        if ($request->getQueryParam('nomor_surat_ojk')) 
-            $shp = $shp->and_where('NomorSurat','contains',$request->getQueryParam('nomor_surat_ojk'));
-        $shp = Helpers::createLOV($shp->get(), $select);
+        if ($request->getQueryParam('nomor_surat_ojk')) {
+            $list_shp = $list_shp->and_where('NomorSurat','contains',$request->getQueryParam('nomor_surat_ojk'));
+        }
+
+        $list_shp = Helpers::createLOV($list_shp->get(), $select);
+
+        if ($request->getQueryParam('nomor_surat_ojk') && !count($list_shp)) return [];
 
         // Filter PIC
         $select = [
@@ -99,78 +166,81 @@ class Dao {
             'UserAccount' => 'id_user_account',
         ];
 
-        $pic = $this->sp_client
+        $list_tim_surat = $this->sp_client
             ->query('TimSuratTugas')
             ->fields(array_keys($select));
-        $pic = $pic->where('PIC','=', 1)
+        $list_tim_surat = $list_tim_surat->where('PIC','=', 1)
             ->and_where('UserAccount', 'not_null', '')
             ->and_where('SuratTugas', 'not_null', '');
 
-        $pic = Helpers::createLOV($pic->get(), $select, "SuratTugas");
-
-        // Filter UserAccount
-        $select = [
-            'ID' => 'id_user_account',
-            'NamaLengkap' => 'nama_lengkap',
-        ];
-
-        $user_account = $this->sp_client
-            ->query('UserAccount')
-            ->fields(array_keys($select));
-
-        if ($request->getQueryParam('pic')) 
-            $user_account = $user_account->where('NamaLengkap','contains', $request->getQueryParam('pic'));
-
-        $user_account = Helpers::createLOV($user_account->get(), $select);
+        $list_tim_surat = Helpers::createLOV($list_tim_surat->get(), $select, "SuratTugas");
 
         // Filter Temuan
         $select = [
-            'ID' => 'id_temuan',
+            'ID' => 'id_kesimpulan_pihak',
             'DPLEshp' => 'id_shp',
             'Temuan' => 'temuan'
         ];
 
-        $temuan = $this->sp_client
+        $list_kesimpulan_pihak = $this->sp_client
             ->query('DPLEKesimpulanPihak')
             ->fields(array_keys($select));
 
-        $temuan = $temuan
-            ->where('DPLEshp','not_null', '')
-            ->and_where('Temuan', 'not_null', '');
+        $list_kesimpulan_pihak = $list_kesimpulan_pihak
+            ->where('DPLEshp','not_null', '');
 
         if ($request->getQueryParam('temuan')) 
-            $temuan = $temuan->and_where('Temuan','contains', $request->getQueryParam('temuan'));
+            $list_kesimpulan_pihak = $list_kesimpulan_pihak->and_where('Temuan','contains', $request->getQueryParam('temuan'));
 
-        $temuan = Helpers::createLOV($temuan->get(), $select, "DPLEshp");
+        $list_kesimpulan_pihak = Helpers::createLOV($list_kesimpulan_pihak->get(), $select);
 
-        // return $pic;
+        if ($request->getQueryParam('temuan') && count($list_kesimpulan_pihak)) return [];
+
         // Create structure data
         $data = [];
-        foreach ($shp as $id_shp => $item) {
-            $lookup_surat_tugas = isset($surat_tugas[$item['id_surat_tugas']])? $surat_tugas[$item['id_surat_tugas']]: false;
-            $lookup_temuan = isset($temuan[$id_shp])? $temuan[$id_shp]: false;
-
-            $pic_name = "";
+        foreach ($list_shp_pihak as $id_shp_pihak => $shp_pihak) {
+            $perusahaan = isset($list_perusahaan[$shp_pihak['id_profil']])? $list_perusahaan[$shp_pihak['id_profil']]['perusahaan']: "";
             
-            // Mencari tim surat tugas
-            if ($lookup_surat_tugas) {
-                if (isset($pic[$lookup_surat_tugas['id_surat_tugas']])) {  
-                    $pic_name = $user_account[$pic[$lookup_surat_tugas['id_surat_tugas']]['id_user_account']]["nama_lengkap"];
-                }
+            if (!$perusahaan) continue;
+
+            $lookup_kesimpulan_pihak = isset($list_kesimpulan_pihak[$shp_pihak['id_kesimpulan_pihak']])? $list_kesimpulan_pihak[$shp_pihak['id_kesimpulan_pihak']]: [];
+
+            $lookup_shp = isset($list_shp[$lookup_kesimpulan_pihak['id_shp']])? $list_shp[$lookup_kesimpulan_pihak['id_shp']]: [];
+
+            $lookup_surat_tugas = isset($list_surat_tugas[$lookup_shp['id_surat_tugas']])? $list_surat_tugas[$lookup_shp['id_surat_tugas']] :[];
+
+            if ( !$lookup_surat_tugas && ($request->getQueryParam('awal_periode') 
+                || $request->getQueryParam('akhir_periode') 
+                || $request->getQueryParam('nomor_surat_tugas')))
+                continue;
+
+            $lookup_tim_surat = isset($list_tim_surat[$lookup_surat_tugas['id_surat_tugas']])? $list_tim_surat[$lookup_surat_tugas['id_surat_tugas']]: false;
+
+            $pic = "";
+            if ($lookup_tim_surat) {
+                $pic = isset($list_user_account[$lookup_tim_surat['id_user_account']])? $list_user_account[$lookup_tim_surat['id_user_account']]['nama_lengkap']: '';
             }
 
+            if (!$pic && $request->getQueryParam('pic')) continue;
+
+            $jenis_pemeriksaan = isset($list_jenis_pemeriksaan[$lookup_surat_tugas['id_jenis_pemeriksaan']])? $list_jenis_pemeriksaan[$lookup_surat_tugas['id_jenis_pemeriksaan']]['jenis_pemeriksaan']: "";
+            $tema_pengawasan = isset($list_tema_pengawasan[$lookup_surat_tugas['id_tema_pengawasan']])? $list_tema_pengawasan[$lookup_surat_tugas['id_tema_pengawasan']]['tema_pengawasan']: "";
+
             $data[] = [
-                'id_shp' => $id_shp,
-                'id_surat_tugas' => $item['id_surat_tugas'],
-                'nomor_surat_ojk' => $item['nomor_surat_ojk'],
-                'nomor_surat_tugas' => ($lookup_surat_tugas? $lookup_surat_tugas['nomor_surat_tugas']: ''),
-                'temuan' => ($lookup_temuan? $lookup_temuan['temuan']: ''),
-                'awal_periode' => ($lookup_surat_tugas? $lookup_surat_tugas['awal_periode']: ''),
-                'akhir_periode' => ($lookup_surat_tugas? $lookup_surat_tugas['akhir_periode']: ''),
-                'pic' => $pic_name,
-                'jenis_pemeriksaan'=> $lookup_surat_tugas? $jenis_pemeriksaan[$lookup_surat_tugas['id_jenis_pemeriksaan']]['jenis_pemeriksaan']: '',
-                'tema_pengawasan' => $lookup_surat_tugas? $tema_pengawasan[$lookup_surat_tugas['id_tema_pengawasan']]['tema_pengawasan']: '',
-                'lokasi' => ($lookup_surat_tugas? $lookup_surat_tugas['lokasi']: '')
+                'id_shp_pihak' => $shp_pihak['id_shp_pihak'],
+                'id_surat_tugas' => $lookup_surat_tugas['id_surat_tugas'],
+                'perusahaan' => $perusahaan,
+                'nomor_surat_ojk' => $lookup_shp['nomor_surat_ojk'],
+                'id_surat_tugas' => $lookup_surat_tugas['id_surat_tugas'],
+                'nomor_surat_tugas' => $lookup_surat_tugas['nomor_surat_tugas'],
+                'temuan' => $lookup_kesimpulan_pihak['temuan'],
+                'awal_periode' => $lookup_surat_tugas['awal_periode'],
+                'akhir_periode' => $lookup_surat_tugas['akhir_periode'],
+                'pic' => $pic,
+                'jenis_pemeriksaan'=> $jenis_pemeriksaan,
+                'tema_pengawasan' => $tema_pengawasan,
+                'lokasi' => $lookup_surat_tugas['lokasi'],
+                'sisa_waktu' => 10
             ];
         }
         
