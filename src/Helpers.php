@@ -45,7 +45,13 @@ class Helpers {
 
  			foreach ($column as $table_column => $attribute) {
  					$split_lookup = explode(';#', isset($item[$table_column])? $item[$table_column]: '');
+					
 					$attributes[$attribute] = $split_lookup[0];
+ 					if ($split_lookup[0] === 'float') {
+ 						$split_value = explode('.', $split_lookup[1]);
+
+ 						$attributes[$attribute] = $split_value[0];
+ 					}
  			}
 
  			$split_key = explode(';#', isset($item[$table_key])? $item[$table_key]: '');

@@ -179,7 +179,8 @@ class Dao {
         $select = [
             'ID' => 'id_kesimpulan_pihak',
             'DPLEshp' => 'id_shp',
-            'Temuan' => 'temuan'
+            'Temuan' => 'temuan',
+            "SisaWaktu" => 'sisa_waktu',
         ];
 
         $list_kesimpulan_pihak = $this->sp_client
@@ -193,9 +194,10 @@ class Dao {
             $list_kesimpulan_pihak = $list_kesimpulan_pihak->and_where('Temuan','contains', $request->getQueryParam('temuan'));
 
         $list_kesimpulan_pihak = Helpers::createLOV($list_kesimpulan_pihak->get(), $select);
-
+        // var_dump($list_kesimpulan_pihak);
         if ($request->getQueryParam('temuan') && count($list_kesimpulan_pihak)) return [];
 
+        // return $list_kesimpulan_pihak;
         // Create structure data
         $data = [];
         foreach ($list_shp_pihak as $id_shp_pihak => $shp_pihak) {
@@ -203,11 +205,26 @@ class Dao {
             
             if (!$perusahaan) continue;
 
-            $lookup_kesimpulan_pihak = isset($list_kesimpulan_pihak[$shp_pihak['id_kesimpulan_pihak']])? $list_kesimpulan_pihak[$shp_pihak['id_kesimpulan_pihak']]: [];
+            $lookup_kesimpulan_pihak = isset($list_kesimpulan_pihak[$shp_pihak['id_kesimpulan_pihak']])? $list_kesimpulan_pihak[$shp_pihak['id_kesimpulan_pihak']]: false;
+            if (!$lookup_kesimpulan_pihak) continue;
 
-            $lookup_shp = isset($list_shp[$lookup_kesimpulan_pihak['id_shp']])? $list_shp[$lookup_kesimpulan_pihak['id_shp']]: [];
+            
+            // Filter sisa waktu
+            $sisa_waktu = (int)$lookup_kesimpulan_pihak['sisa_waktu'];
 
-            $lookup_surat_tugas = isset($list_surat_tugas[$lookup_shp['id_surat_tugas']])? $list_surat_tugas[$lookup_shp['id_surat_tugas']] :[];
+            if ($sisa_waktu < 0) continue;
+
+            if ($request->getQueryParam('sisa_waktu_kurang')) {
+                if ($sisa_waktu >= (int)$request->getQueryParam('sisa_waktu_kurang')) continue;
+            } else if ($request->getQueryParam('sisa_waktu_lebih')) {
+                if ($sisa_waktu <= (int)$request->getQueryParam('sisa_waktu_lebih')) continue;
+            } else if ($request->getQueryParam('sisa_waktu')) {
+                if ($sisa_waktu < (int)$request->getQueryParam('sisa_waktu') || $sisa_waktu > (int)$request->getQueryParam('sisa_waktu')) continue;
+            }
+
+            $lookup_shp = isset($list_shp[$lookup_kesimpulan_pihak['id_shp']])? $list_shp[$lookup_kesimpulan_pihak['id_shp']]: false;
+
+            $lookup_surat_tugas = isset($list_surat_tugas[$lookup_shp['id_surat_tugas']])? $list_surat_tugas[$lookup_shp['id_surat_tugas']] : false;
 
             if ( !$lookup_surat_tugas && ($request->getQueryParam('awal_periode') 
                 || $request->getQueryParam('akhir_periode') 
@@ -240,7 +257,7 @@ class Dao {
                 'jenis_pemeriksaan'=> $jenis_pemeriksaan,
                 'tema_pengawasan' => $tema_pengawasan,
                 'lokasi' => $lookup_surat_tugas['lokasi'],
-                'sisa_waktu' => 10
+                'sisa_waktu' => $lookup_kesimpulan_pihak['sisa_waktu']
             ];
         }
         
