@@ -1,0 +1,783 @@
+{
+	"variables": [],
+	"info": {
+		"name": "SIPM2017",
+		"_postman_id": "51e0fde6-72f4-d37d-8f1b-3d2b099228d6",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Monitoring Tanggapan",
+			"request": {
+				"url": {
+					"raw": "{{URL}}/monitoring-tanggapan?perusahaan&nomor_surat_tugas&nomor_surat_ojk&pic&awal_periode&akhir_periode&jenis_pemeriksaan&tema_pengawasan&lokasi&sisa_waktu_kurang&sisa_waktu_lebih&sisa_waktu",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"monitoring-tanggapan"
+					],
+					"query": [
+						{
+							"key": "perusahaan",
+							"value": "",
+							"equals": false,
+							"description": ""
+						},
+						{
+							"key": "nomor_surat_tugas",
+							"value": "",
+							"equals": false,
+							"description": ""
+						},
+						{
+							"key": "nomor_surat_ojk",
+							"value": "",
+							"equals": false,
+							"description": ""
+						},
+						{
+							"key": "pic",
+							"value": "",
+							"equals": false,
+							"description": ""
+						},
+						{
+							"key": "awal_periode",
+							"value": "",
+							"equals": false,
+							"description": "format: DD-MM-YYYY"
+						},
+						{
+							"key": "akhir_periode",
+							"value": "",
+							"equals": false,
+							"description": "format: DD-MM-YYYY"
+						},
+						{
+							"key": "jenis_pemeriksaan",
+							"value": "",
+							"equals": false,
+							"description": ""
+						},
+						{
+							"key": "tema_pengawasan",
+							"value": "",
+							"equals": false,
+							"description": ""
+						},
+						{
+							"key": "lokasi",
+							"value": "",
+							"equals": false,
+							"description": "[Cabang, Pusat]"
+						},
+						{
+							"key": "sisa_waktu_kurang",
+							"value": "",
+							"equals": false,
+							"description": ""
+						},
+						{
+							"key": "sisa_waktu_lebih",
+							"value": "",
+							"equals": false,
+							"description": ""
+						},
+						{
+							"key": "sisa_waktu",
+							"value": "",
+							"equals": false,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": [
+				{
+					"id": "69f352d2-bfb3-4791-901d-74383f53c99c",
+					"name": "Monitoring Tanggapan",
+					"originalRequest": {
+						"url": {
+							"raw": "monitoring-tanggapan?perusahaan&nomor_surat_tugas&nomor_surat_ojk&pic&awal_periode&akhir_periode&jenis_pemeriksaan&tema_pengawasan&lokasi&sisa_waktu_kurang&sisa_waktu_lebih&sisa_waktu",
+							"host": [
+								"monitoring-tanggapan"
+							],
+							"query": [
+								{
+									"key": "perusahaan",
+									"value": "",
+									"equals": false,
+									"description": ""
+								},
+								{
+									"key": "nomor_surat_tugas",
+									"value": "",
+									"equals": false,
+									"description": ""
+								},
+								{
+									"key": "nomor_surat_ojk",
+									"value": "",
+									"equals": false,
+									"description": ""
+								},
+								{
+									"key": "pic",
+									"value": "",
+									"equals": false,
+									"description": ""
+								},
+								{
+									"key": "awal_periode",
+									"value": "",
+									"equals": false,
+									"description": "format: DD-MM-YYYY"
+								},
+								{
+									"key": "akhir_periode",
+									"value": "",
+									"equals": false,
+									"description": "format: DD-MM-YYYY"
+								},
+								{
+									"key": "jenis_pemeriksaan",
+									"value": "",
+									"equals": false,
+									"description": ""
+								},
+								{
+									"key": "tema_pengawasan",
+									"value": "",
+									"equals": false,
+									"description": ""
+								},
+								{
+									"key": "lokasi",
+									"value": "",
+									"equals": false,
+									"description": ""
+								},
+								{
+									"key": "sisa_waktu_kurang",
+									"value": "",
+									"equals": false,
+									"description": ""
+								},
+								{
+									"key": "sisa_waktu_lebih",
+									"value": "",
+									"equals": false,
+									"description": ""
+								},
+								{
+									"key": "sisa_waktu",
+									"value": "",
+									"equals": false,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [],
+						"body": {}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"_postman_previewtype": "parsed",
+					"header": [],
+					"cookie": [],
+					"responseTime": 0,
+					"body": "[\n    {\n    \t\"perusahaan\": \"Perusahaan A\",\n    \t\"nomor_surat_tugas\": \"ST-001\",\n    \t\"nomor_surat_ojk\": \"SHP-001\",\n    \t\"pic\": \"Budi\",\n    \t\"tanggal_pemeriksaan\": \"12 September 2017 - 1 Oktober 2017\",\n    \t\"jenis_pemeriksaan\": \"Jenis Pemeriksaan A\",\n    \t\"tema_pengawasan\": \"Tema Pengawasan A\",\n    \t\"lokasi\": \"Lokasi A\",\n    \t\"temuan\": \"Temuan A\",\n    \t\"sisa_waktu\": 20\n    }\n]"
+				}
+			]
+		},
+		{
+			"name": "Peraturan",
+			"request": {
+				"url": {
+					"raw": "{{URL}}/peraturan?level",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"peraturan"
+					],
+					"query": [
+						{
+							"key": "level",
+							"value": "",
+							"equals": false,
+							"description": "[1, 2, 3]"
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": [
+				{
+					"id": "53b4d4f2-0b1c-477d-be27-efab3da2c043",
+					"name": "Monitoring Tanggapan",
+					"originalRequest": {
+						"url": {
+							"raw": "monitoring-tanggapan?perusahaan&nomor_surat_tugas&nomor_surat_ojk&pic&awal_periode&akhir_periode&jenis_pemeriksaan&tema_pengawasan&lokasi&sisa_waktu_kurang&sisa_waktu_lebih&sisa_waktu",
+							"host": [
+								"monitoring-tanggapan"
+							],
+							"query": [
+								{
+									"key": "perusahaan",
+									"value": "",
+									"equals": false,
+									"description": ""
+								},
+								{
+									"key": "nomor_surat_tugas",
+									"value": "",
+									"equals": false,
+									"description": ""
+								},
+								{
+									"key": "nomor_surat_ojk",
+									"value": "",
+									"equals": false,
+									"description": ""
+								},
+								{
+									"key": "pic",
+									"value": "",
+									"equals": false,
+									"description": ""
+								},
+								{
+									"key": "awal_periode",
+									"value": "",
+									"equals": false,
+									"description": "format: DD-MM-YYYY"
+								},
+								{
+									"key": "akhir_periode",
+									"value": "",
+									"equals": false,
+									"description": "format: DD-MM-YYYY"
+								},
+								{
+									"key": "jenis_pemeriksaan",
+									"value": "",
+									"equals": false,
+									"description": ""
+								},
+								{
+									"key": "tema_pengawasan",
+									"value": "",
+									"equals": false,
+									"description": ""
+								},
+								{
+									"key": "lokasi",
+									"value": "",
+									"equals": false,
+									"description": ""
+								},
+								{
+									"key": "sisa_waktu_kurang",
+									"value": "",
+									"equals": false,
+									"description": ""
+								},
+								{
+									"key": "sisa_waktu_lebih",
+									"value": "",
+									"equals": false,
+									"description": ""
+								},
+								{
+									"key": "sisa_waktu",
+									"value": "",
+									"equals": false,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [],
+						"body": {}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"_postman_previewtype": "parsed",
+					"header": [],
+					"cookie": [],
+					"responseTime": 0,
+					"body": "[\n    {\n    \t\"perusahaan\": \"Perusahaan A\",\n    \t\"nomor_surat_tugas\": \"ST-001\",\n    \t\"nomor_surat_ojk\": \"SHP-001\",\n    \t\"pic\": \"Budi\",\n    \t\"tanggal_pemeriksaan\": \"12 September 2017 - 1 Oktober 2017\",\n    \t\"jenis_pemeriksaan\": \"Jenis Pemeriksaan A\",\n    \t\"tema_pengawasan\": \"Tema Pengawasan A\",\n    \t\"lokasi\": \"Lokasi A\",\n    \t\"temuan\": \"Temuan A\",\n    \t\"sisa_waktu\": 20\n    }\n]"
+				}
+			]
+		},
+		{
+			"name": "Pelanggaran per Perusahaan",
+			"request": {
+				"url": {
+					"raw": "{{URL}}//peraturan-per-perusahaan?perusahaan&awal_periode&akhir_periode&peraturan&peraturan_level1&peraturan_level2&peraturan_level3",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"",
+						"peraturan-per-perusahaan"
+					],
+					"query": [
+						{
+							"key": "perusahaan",
+							"value": "",
+							"equals": false,
+							"description": ""
+						},
+						{
+							"key": "awal_periode",
+							"value": "",
+							"equals": false,
+							"description": "format: DD-MM-YYYY"
+						},
+						{
+							"key": "akhir_periode",
+							"value": "",
+							"equals": false,
+							"description": "format: DD-MM-YYYY"
+						},
+						{
+							"key": "peraturan",
+							"value": "",
+							"equals": false,
+							"description": ""
+						},
+						{
+							"key": "peraturan_level1",
+							"value": "",
+							"equals": false,
+							"description": ""
+						},
+						{
+							"key": "peraturan_level2",
+							"value": "",
+							"equals": false,
+							"description": ""
+						},
+						{
+							"key": "peraturan_level3",
+							"value": "",
+							"equals": false,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": [
+				{
+					"id": "8073a40a-0430-44dc-8f88-0a8214bfcb85",
+					"name": "Pelanggaran per Perusahaan",
+					"originalRequest": {
+						"url": {
+							"raw": "/peraturan-per-perusahaan?perusahaan&awal_periode&akhir_periode&peraturan_level1&peraturan_level2&peraturan_level3",
+							"path": [
+								"peraturan-per-perusahaan"
+							],
+							"query": [
+								{
+									"key": "perusahaan",
+									"value": "",
+									"equals": false,
+									"description": ""
+								},
+								{
+									"key": "awal_periode",
+									"value": "",
+									"equals": false,
+									"description": "format: DD-MM-YYYY"
+								},
+								{
+									"key": "akhir_periode",
+									"value": "",
+									"equals": false,
+									"description": "format: DD-MM-YYYY"
+								},
+								{
+									"key": "peraturan_level1",
+									"value": "",
+									"equals": false,
+									"description": ""
+								},
+								{
+									"key": "peraturan_level2",
+									"value": "",
+									"equals": false,
+									"description": ""
+								},
+								{
+									"key": "peraturan_level3",
+									"value": "",
+									"equals": false,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [],
+						"body": {}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"_postman_previewtype": "parsed",
+					"header": [],
+					"cookie": [],
+					"responseTime": 0,
+					"body": "[\n    {\n        \"perusahaan\": \"Perusahaan A\",\n        \"periode\": \"11 Agustus 2017 - 12 September 2017\",\n        \"peraturan\": [\n            {\n                \"peraturan\": \"Peraturan A\",\n                \"jumlah_pelanggaran\": 20\n            },\n            {\n                \"peraturan\": \"Peraturan B\",\n                \"jumlah_pelanggaran\": 3\n            }\n        ]\n    }\n]"
+				}
+			]
+		},
+		{
+			"name": "Pelanggaran per Peraturan",
+			"request": {
+				"url": {
+					"raw": "{{URL}}//pelanggaran-per-peraturan?peraturan&peraturan_level1&peraturan_level2&peraturan_level3&awal_periode&akhir_periode",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"",
+						"pelanggaran-per-peraturan"
+					],
+					"query": [
+						{
+							"key": "peraturan",
+							"value": "",
+							"equals": false,
+							"description": ""
+						},
+						{
+							"key": "peraturan_level1",
+							"value": "",
+							"equals": false,
+							"description": ""
+						},
+						{
+							"key": "peraturan_level2",
+							"value": "",
+							"equals": false,
+							"description": ""
+						},
+						{
+							"key": "peraturan_level3",
+							"value": "",
+							"equals": false,
+							"description": ""
+						},
+						{
+							"key": "awal_periode",
+							"value": "",
+							"equals": false,
+							"description": "format: DD-MM-YYYY"
+						},
+						{
+							"key": "akhir_periode",
+							"value": "",
+							"equals": false,
+							"description": "format: DD-MM-YYYY"
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": [
+				{
+					"id": "623ecf54-4530-4045-aac3-eff541e60fb6",
+					"name": "Pelanggaran per Peraturan",
+					"originalRequest": {
+						"url": {
+							"raw": "/pelanggaran-per-peraturan?peraturan_level1&peraturan_level2&peraturan_level3&awal_periode&akhir_periode",
+							"path": [
+								"pelanggaran-per-peraturan"
+							],
+							"query": [
+								{
+									"key": "peraturan_level1",
+									"value": "",
+									"equals": false,
+									"description": ""
+								},
+								{
+									"key": "peraturan_level2",
+									"value": "",
+									"equals": false,
+									"description": ""
+								},
+								{
+									"key": "peraturan_level3",
+									"value": "",
+									"equals": false,
+									"description": ""
+								},
+								{
+									"key": "awal_periode",
+									"value": "",
+									"equals": false,
+									"description": "format: DD-MM-YYYY"
+								},
+								{
+									"key": "akhir_periode",
+									"value": "",
+									"equals": false,
+									"description": "format: DD-MM-YYYY"
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [],
+						"body": {}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"_postman_previewtype": "parsed",
+					"header": [],
+					"cookie": [],
+					"responseTime": 0,
+					"body": "[\n    {\n        \"peraturan\": \"Peraturan A\",\n        \"pelanggaran\": [{\"perusahaan\": \"Perusahaan A\", \"jumlah_pelanggaran\": 2}, {\"perusahaan\": \"Perusahaan B\", \"jumlah_pelanggaran\": 3}]\n    }\n]"
+				}
+			]
+		},
+		{
+			"name": "Rekapitulasi Pelanggaran",
+			"request": {
+				"url": {
+					"raw": "{{URL}}//rekapitulasi-pelanggaran?awal_periode&akhir_periode&jenis_perusahaan",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"",
+						"rekapitulasi-pelanggaran"
+					],
+					"query": [
+						{
+							"key": "awal_periode",
+							"value": "",
+							"equals": false,
+							"description": "format: DD-MM-YYYY"
+						},
+						{
+							"key": "akhir_periode",
+							"value": "",
+							"equals": false,
+							"description": "format: DD-MM-YYYY"
+						},
+						{
+							"key": "jenis_perusahaan",
+							"value": "",
+							"equals": false,
+							"description": "[Perusahaan Efek, SRO, Lembaga Efek, dll]"
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": [
+				{
+					"id": "e78f2863-e5f9-49f4-a67b-1385a9f57f1c",
+					"name": "Rekapitulasi Pelanggaran",
+					"originalRequest": {
+						"url": {
+							"raw": "/rekapitulasi-pelanggaran?awal_periode&akhir_periode&jenis_perusahaan",
+							"path": [
+								"rekapitulasi-pelanggaran"
+							],
+							"query": [
+								{
+									"key": "awal_periode",
+									"value": "",
+									"equals": false,
+									"description": "format: DD-MM-YYYY"
+								},
+								{
+									"key": "akhir_periode",
+									"value": "",
+									"equals": false,
+									"description": "format: DD-MM-YYYY"
+								},
+								{
+									"key": "jenis_perusahaan",
+									"value": "",
+									"equals": false,
+									"description": "[Perusahaan Efek, SRO, Lembaga Efek, dll]"
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [],
+						"body": {}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"_postman_previewtype": "parsed",
+					"header": [],
+					"cookie": [],
+					"responseTime": 0,
+					"body": "[\n    {\"perusahaan\": \"Perusahaan A\", \"jumlah_pemeriksaan\": 3, \"jumlah_pelanggaran\": 32}\n]"
+				}
+			]
+		},
+		{
+			"name": "Pencarian Pihak",
+			"request": {
+				"url": {
+					"raw": "{{URL}}//pencarian-pihak?nama&jenis_kelamin&tempat_lahir&nomor_identitas&alamat&izin_ojk",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"",
+						"pencarian-pihak"
+					],
+					"query": [
+						{
+							"key": "nama",
+							"value": "",
+							"equals": false,
+							"description": ""
+						},
+						{
+							"key": "jenis_kelamin",
+							"value": "",
+							"equals": false,
+							"description": "[P, W]"
+						},
+						{
+							"key": "tempat_lahir",
+							"value": "",
+							"equals": false,
+							"description": "format: DD-MM-YYYY"
+						},
+						{
+							"key": "nomor_identitas",
+							"value": "",
+							"equals": false,
+							"description": ""
+						},
+						{
+							"key": "alamat",
+							"value": "",
+							"equals": false,
+							"description": ""
+						},
+						{
+							"key": "izin_ojk",
+							"value": "",
+							"equals": false,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": [
+				{
+					"id": "cc8f16f9-2f28-4c9a-8ca2-88c77907fbd0",
+					"name": "Pencarian Pihak",
+					"originalRequest": {
+						"url": {
+							"raw": "/pencarian-pihak?nama&jenis_kelamin&tempat_lahir&nomor_identitas&alamat&izin_ojk",
+							"path": [
+								"pencarian-pihak"
+							],
+							"query": [
+								{
+									"key": "nama",
+									"value": "",
+									"equals": false,
+									"description": ""
+								},
+								{
+									"key": "jenis_kelamin",
+									"value": "",
+									"equals": false,
+									"description": "[P, W]"
+								},
+								{
+									"key": "tempat_lahir",
+									"value": "",
+									"equals": false,
+									"description": "format: DD-MM-YYYY"
+								},
+								{
+									"key": "nomor_identitas",
+									"value": "",
+									"equals": false,
+									"description": ""
+								},
+								{
+									"key": "alamat",
+									"value": "",
+									"equals": false,
+									"description": ""
+								},
+								{
+									"key": "izin_ojk",
+									"value": "",
+									"equals": false,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [],
+						"body": {}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"_postman_previewtype": "parsed",
+					"header": [],
+					"cookie": [],
+					"responseTime": 0,
+					"body": "[\n    {\n        \"nama\": \"Nama A\",\n        \"izin_ojk\": \"OJK-001\",\n        \"jenis_kelamin\": \"Pria\",\n        \"nomor_identitas\": \"0001\",\n        \"alamat\": \"Alamat A\",\n        \"pelanggaran\": \"Peraturan A\",\n        \"perusahaan\": \"Perusahaan A\"\n    }\n]"
+				}
+			]
+		}
+	]
+}
