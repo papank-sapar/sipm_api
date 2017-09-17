@@ -270,32 +270,154 @@ class Dao {
         return $data;
     }
 
-    public function sampleJSON($request) {
-        return [
-            [
-                "perusahaan" => "Perusahaan A",
-                "nomor_st" => "ST-001",
-                "nomor_surat_ojk" => "OJK-001",
-                "pic" => "PIC A",
-                "tanggal_pemeriksaan" => "18-22 Juli 2016",
-                "jenis_pemeriksaan" => "Pemeriksaan 1",
-                "tema_pengawasan" => "Tema Pengawasan 1",
-                "lokasi" => "Kantor Pusat",
-                "judul_temuan" => "Temuan 1",
-                "sisa_waktu" => 20
-            ],
-            [
-                "perusahaan" => "Perusahaan B",
-                "nomor_st" => "ST-002",
-                "nomor_surat_ojk" => "OJK-002",
-                "pic" => "PIC B",
-                "tanggal_pemeriksaan" => "18-22 Juli 2016",
-                "jenis_pemeriksaan" => "Pemeriksaan 2",
-                "tema_pengawasan" => "Tema Pengawasan 2",
-                "lokasi" => "Kantor Pusat",
-                "judul_temuan" => "Temuan 2",
-                "sisa_waktu" => 40
-            ]
+    public function getPelanggaranPerusahaan($request) {
+
+        // Filter Perusahaan
+        $select = [
+            'ID' => 'id_profil',
+            'NamaPihak' => 'perusahaan',
         ];
+
+        $list_perusahaan = $this->sp_client
+            ->query('MasterProfil')
+            ->fields(array_keys($select));
+        $list_perusahaan = $list_perusahaan->where("JenisPihak", "=", "Perusahaan");
+
+        if ($request->getQueryParam('perusahaan')) {
+            $list_perusahaan = $list_perusahaan->and_where('NamaPihak','contains', $request->getQueryParam('perusahaan'));
+        }
+
+        $list_perusahaan = Helpers::createLOV($list_perusahaan->get(), $select);
+
+        if ($request->getQueryParam('perusahaan') && !count($list_perusahaan)) return [];
+
+
+        // Filter surat tugas
+        $select = [
+            'ID' => 'id_surat_tugas',
+            'AwalPeriode' => 'awal_periode',
+            'AkhirPeriode' => 'akhir_periode',
+        ];
+
+        $list_surat_tugas = $this->sp_client
+            ->query('MasterSuratTugas')
+            ->fields(array_keys($select));
+        $list_surat_tugas = $list_surat_tugas
+            ->where('Direktorat','=', 'DPLE');
+
+        if ($request->getQueryParam('awal_periode')) 
+            $list_surat_tugas = $list_surat_tugas->and_where('AwalPeriode','>=',\Thybag\SharepointApi::dateTime($request->getQueryParam('awal_periode')));
+        if ($request->getQueryParam('akhir_periode')) 
+            $list_surat_tugas = $list_surat_tugas->and_where('AkhirPeriode','<=',\Thybag\SharepointApi::dateTime($request->getQueryParam('akhir_periode')));
+        
+        $list_surat_tugas = Helpers::createLOV($list_surat_tugas->get(), $select);
+        
+        if (($request->getQueryParam('awal_periode') || $request->getQueryParam('akhir_periode')) 
+            && !count($list_surat_tugas)) return [];
+
+        // Filter SHP Pihak
+        $select = [
+            'ID' => 'id_shp_pihak',
+            'MasterProfil' => 'id_profil',
+            'DPLEKesimpulanPihak' => 'id_kesimpulan_pihak',
+        ];
+
+        $list_shp_pihak = $this->sp_client
+            ->query('DPLESHPPihak')
+            ->fields(array_keys($select));
+        $list_shp_pihak = $list_shp_pihak->where('DPLEKesimpulanPihak','not_null', '');
+
+        $list_shp_pihak = Helpers::createLOV($list_shp_pihak->get(), $select);
+
+        if (!count($list_shp_pihak)) return [];
+
+        // Filter SHP
+        $select = [
+            'ID' => 'id_shp',
+            'MasterSuratTugas' => 'id_surat_tugas',
+        ];
+
+        $list_shp = $this->sp_client
+            ->query('DPLEshp')
+            ->fields(array_keys($select));
+        $list_shp = $list_shp->where('MasterSuratTugas','not_null', '');
+
+        $list_shp = Helpers::createLOV($list_shp->get(), $select);
+
+        if (!count($list_shp)) return [];
+
+
+        // Filter SHP Peraturan
+        $select = [
+            'ID' => 'id_shp_peraturan',
+            'DPLEKesimpulanPihak' => 'id_kesimpulan_pihak',
+            'Peraturan' => 'id_peraturan',
+        ];
+
+        $list_shp_peraturan = $this->sp_client
+            ->query('DPLEshpPeraturan')
+            ->fields(array_keys($select));
+        $list_shp_peraturan = $list_shp_peraturan
+            ->where('DPLEKesimpulanPihak','not_null', '')
+            ->and_where('Peraturan','not_null', '');
+
+        $list_shp_peraturan = Helpers::createLOV($list_shp_peraturan->get(), $select);
+
+        if (!count($list_shp_peraturan)) return [];
+
+        // Filter Peraturan
+        $select = [
+            'ID' => 'id_peraturan',
+            'Peraturan' => 'peraturan',
+            'Level' => 'level',
+            'Parent' => 'id_parent',
+        ];
+
+        $list_peraturan = $this->sp_client
+            ->query('MasterPeraturan')
+            ->fields(array_keys($select))
+            ->where('Peraturan', 'not_null', '');
+
+        $list_peraturan = Helpers::createLOV($list_peraturan->get(), $select);
+
+        if (!count($list_peraturan)) return [];
+
+        $table_peraturan = $list_peraturan;
+
+        foreach ($list_peraturan as $id_peraturan => $peraturan) {
+            $list_peraturan[$id_peraturan]['level'] = (int) $list_peraturan[$id_peraturan]['level'];
+            $list_peraturan[$id_peraturan]['level1'] = Helpers::getParentByLevel(1, $id_peraturan, $table_peraturan);
+            $list_peraturan[$id_peraturan]['level2'] = Helpers::getParentByLevel(2, $id_peraturan, $table_peraturan);
+            $list_peraturan[$id_peraturan]['level3'] = Helpers::getParentByLevel(3, $id_peraturan, $table_peraturan);
+        }
+
+        return $list_peraturan;
+
+        // Join perusahaan into shp_pihak
+        foreach ($list_shp_pihak as $id_shp_pihak => $shp_pihak) {
+            $list_shp_pihak[$id_shp_pihak]['perusahaan'] = isset($list_perusahaan[$shp_pihak['id_profil']])? $list_perusahaan[$shp_pihak['id_profil']]['perusahaan']: null;
+        }
+
+    }
+    public function getPeraturan($request) {
+
+        $select = [
+            'ID' => 'id_peraturan',
+            'Peraturan' => 'peraturan',
+            'Level' => 'level'
+        ];
+
+        $list_peraturan = $this->sp_client
+            ->query('MasterPeraturan')
+            ->fields(array_keys($select));
+        $list_peraturan = $list_peraturan->where('Peraturan', 'not_null', '');
+
+        if ($request->getQueryParam('level')) {
+            $list_peraturan = $list_peraturan->and_where('Level','=', $request->getQueryParam('level'));
+        }
+
+        $list_peraturan = Helpers::createResults($list_peraturan->get(), $select);
+
+        return $list_peraturan;
     }
 }

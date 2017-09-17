@@ -5,30 +5,28 @@ use Monolog\Logger;
 
 class Helpers {
 
-
-
 	// Check results
 	// if no data, return []
-	public static function createResults($results, $select){
- 		if (count($results)) {
-	        $data = [];
+	public static function createResults($list, $select){
+		$list = isset($list['warning'])? []: $list;
 
-	        foreach ($results as $item) {
-	            $attributes = [];
+ 		// If no data, return []
+ 		if (!count($list)) return [];
 
-	            foreach ($select as $field => $attribute) {
-	                $split_lookup = explode(';#', isset($item[$field])? $item[$field]: '');
+	    $data = [];
 
-	                $attributes[$attribute] = $split_lookup[0];
-	            }
+	    foreach ($list as $item) {
+	        $attributes = [];
 
-	            $data[] = $attributes;
+	        foreach ($select as $field => $attribute) {
+	            $split_lookup = explode(';#', isset($item[$field])? $item[$field]: '');
+
+	            $attributes[$attribute] = $split_lookup[0];
 	        }
 
-	        $results = $data;
+	        $data[] = $attributes;
 	    }
-
-        return $results;
+	  	return $data;
  	}
 
  	// Create LOV
@@ -95,5 +93,16 @@ class Helpers {
  				break;
  		}
  	}
+
+
+ 	public static function getParentByLevel ($level, $id, $table_peraturan) {
+        if (((int)$table_peraturan[$id]['level'] - 1) < $level){
+            return null;
+        } else if ($level === ((int)$table_peraturan[$id]['level'] - 1)){
+            return $table_peraturan[$id]['id_parent'];
+        } else {
+            return self::getParentByLevel($level, $table_peraturan[$id]['id_parent'], $table_peraturan);
+        }
+    }
 
  }
