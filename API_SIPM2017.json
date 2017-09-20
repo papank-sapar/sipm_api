@@ -101,7 +101,7 @@
 			},
 			"response": [
 				{
-					"id": "69f352d2-bfb3-4791-901d-74383f53c99c",
+					"id": "d5291a30-483f-4d44-bb05-7501a7c1c2ef",
 					"name": "Monitoring Tanggapan",
 					"originalRequest": {
 						"url": {
@@ -228,7 +228,7 @@
 			},
 			"response": [
 				{
-					"id": "53b4d4f2-0b1c-477d-be27-efab3da2c043",
+					"id": "3842ab60-d6cf-43dc-a5ee-852c9eb937db",
 					"name": "Monitoring Tanggapan",
 					"originalRequest": {
 						"url": {
@@ -331,12 +331,11 @@
 			"name": "Pelanggaran per Perusahaan",
 			"request": {
 				"url": {
-					"raw": "{{URL}}//peraturan-per-perusahaan?perusahaan&awal_periode&akhir_periode&peraturan&peraturan_level1&peraturan_level2&peraturan_level3",
+					"raw": "{{URL}}/peraturan-per-perusahaan?perusahaan&awal_periode&akhir_periode&peraturan&peraturan_level1&peraturan_level2&peraturan_level3",
 					"host": [
 						"{{URL}}"
 					],
 					"path": [
-						"",
 						"peraturan-per-perusahaan"
 					],
 					"query": [
@@ -392,7 +391,7 @@
 			},
 			"response": [
 				{
-					"id": "8073a40a-0430-44dc-8f88-0a8214bfcb85",
+					"id": "d4b73bfe-7b31-46b3-a237-b7c7049e29e0",
 					"name": "Pelanggaran per Perusahaan",
 					"originalRequest": {
 						"url": {
@@ -459,12 +458,11 @@
 			"name": "Pelanggaran per Peraturan",
 			"request": {
 				"url": {
-					"raw": "{{URL}}//pelanggaran-per-peraturan?peraturan&peraturan_level1&peraturan_level2&peraturan_level3&awal_periode&akhir_periode",
+					"raw": "{{URL}}/pelanggaran-per-peraturan?peraturan&peraturan_level1&peraturan_level2&peraturan_level3&awal_periode&akhir_periode",
 					"host": [
 						"{{URL}}"
 					],
 					"path": [
-						"",
 						"pelanggaran-per-peraturan"
 					],
 					"query": [
@@ -514,7 +512,7 @@
 			},
 			"response": [
 				{
-					"id": "623ecf54-4530-4045-aac3-eff541e60fb6",
+					"id": "9f3286a5-9a84-4c34-a7bc-e3a7f7798eca",
 					"name": "Pelanggaran per Peraturan",
 					"originalRequest": {
 						"url": {
@@ -575,12 +573,11 @@
 			"name": "Rekapitulasi Pelanggaran",
 			"request": {
 				"url": {
-					"raw": "{{URL}}//rekapitulasi-pelanggaran?awal_periode&akhir_periode&jenis_perusahaan",
+					"raw": "{{URL}}/rekapitulasi-pelanggaran?awal_periode&akhir_periode&jenis_perusahaan",
 					"host": [
 						"{{URL}}"
 					],
 					"path": [
-						"",
 						"rekapitulasi-pelanggaran"
 					],
 					"query": [
@@ -612,7 +609,7 @@
 			},
 			"response": [
 				{
-					"id": "e78f2863-e5f9-49f4-a67b-1385a9f57f1c",
+					"id": "bcb4489a-f7b5-4ad9-806e-6c7d98775535",
 					"name": "Rekapitulasi Pelanggaran",
 					"originalRequest": {
 						"url": {
@@ -661,12 +658,11 @@
 			"name": "Pencarian Pihak",
 			"request": {
 				"url": {
-					"raw": "{{URL}}//pencarian-pihak?nama&jenis_kelamin&tempat_lahir&nomor_identitas&alamat&izin_ojk",
+					"raw": "{{URL}}/pencarian-pihak?nama&jenis_kelamin&tempat_lahir&nomor_identitas&alamat&izin_ojk",
 					"host": [
 						"{{URL}}"
 					],
 					"path": [
-						"",
 						"pencarian-pihak"
 					],
 					"query": [
@@ -716,7 +712,7 @@
 			},
 			"response": [
 				{
-					"id": "cc8f16f9-2f28-4c9a-8ca2-88c77907fbd0",
+					"id": "fcbedf93-7a26-49b6-b63d-81f59b807955",
 					"name": "Pencarian Pihak",
 					"originalRequest": {
 						"url": {
