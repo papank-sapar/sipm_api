@@ -96,7 +96,7 @@ class Dao {
         if ($request->getQueryParam('nomor_surat_tugas')) 
             $list_surat_tugas = $list_surat_tugas->and_where('NomorSuratTugas','contains', $request->getQueryParam('nomor_surat_tugas'));
         if ($request->getQueryParam('lokasi')) 
-            $list_surat_tugas = $list_surat_tugas->and_where('Lokasi','contains', $request->getQueryParam('lokasi'));
+            $list_surat_tugas = $list_surat_tugas->and_where('Lokasi','=', $request->getQueryParam('lokasi'));
         
         $list_surat_tugas = Helpers::createLOV($list_surat_tugas->get(), $select);
         
@@ -130,7 +130,7 @@ class Dao {
             ->fields(array_keys($select));
         
         if ($request->getQueryParam('jenis_pemeriksaan')){
-            $list_jenis_pemeriksaan = $list_jenis_pemeriksaan->where('JenisPemeriksaan', 'contains', $request->getQueryParam('jenis_pemeriksaan'));
+            $list_jenis_pemeriksaan = $list_jenis_pemeriksaan->where('ID', '=', $request->getQueryParam('jenis_pemeriksaan'));
         }
 
         $list_jenis_pemeriksaan = Helpers::createLOV($list_jenis_pemeriksaan->get(), $select);
@@ -148,7 +148,7 @@ class Dao {
                 ->fields(array_keys($select));
         
         if ($request->getQueryParam('tema_pengawasan')){
-            $list_tema_pengawasan = $list_tema_pengawasan->where('TemaPengawasan', 'contains', $request->getQueryParam('tema_pengawasan'));
+            $list_tema_pengawasan = $list_tema_pengawasan->where('ID', '=', $request->getQueryParam('tema_pengawasan'));
         }
 
         $list_tema_pengawasan = Helpers::createLOV($list_tema_pengawasan->get(), $select);
