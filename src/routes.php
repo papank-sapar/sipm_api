@@ -9,5 +9,5 @@ $app->get('/', function ($request, $response, $args) {
 });
 
 $app->get('/monitoring-tanggapan', 'ReportCtrl:monitoringTanggapan');
-$app->get('/pelanggaran-perusahaan', 'ReportCtrl:pelanggaranPerusahaan');
+$app->get('/pelanggaran-per-perusahaan', 'ReportCtrl:pelanggaranPerPerusahaan');
 $app->get('/peraturan', 'ReportCtrl:peraturan');

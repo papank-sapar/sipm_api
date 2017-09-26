@@ -36,9 +36,9 @@ class ReportCtrl {
         }
     }
 
-    public function pelanggaranPerusahaan($request, $response, $args) {
+    public function pelanggaranPerPerusahaan($request, $response, $args) {
         try {
-            $report = $this->dao->getPelanggaranPerusahaan($request);
+            $report = $this->dao->getPelanggaranPerPerusahaan($request);
 
             return $response->withJson(
                 Helpers::createResponse(

@@ -7,7 +7,7 @@ class Helpers {
 
 	// Check results
 	// if no data, return []
-	public static function createResults($list, $select){
+	public static function createResults($list, $select, $converter = []){
 		$list = isset($list['warning'])? []: $list;
 
  		// If no data, return []
@@ -18,8 +18,14 @@ class Helpers {
 	    foreach ($list as $item) {
 	        $attributes = [];
 
-	        foreach ($select as $field => $attribute) {
-	            $split_lookup = explode(';#', isset($item[$field])? $item[$field]: '');
+	        foreach ($select as $table_column => $attribute) {
+	            $split_lookup = explode(';#', isset($item[$table_column])? $item[$table_column]: '');
+	            
+	            if (count($converter) && isset($converter[$attribute])) {
+	            	if ($converter[$attribute] === DATA_TYPE_INTEGER) {
+						$split_lookup[0] = intval($split_lookup[0]);
+	            	}
+	            }
 
 	            $attributes[$attribute] = $split_lookup[0];
 	        }
@@ -30,7 +36,7 @@ class Helpers {
  	}
 
  	// Create LOV
-	public static function createLOV($list, $column, $table_key = "ID"){
+	public static function createLOV($list, $columns, $table_key = "ID", $converter = []){
  		$lov = [];
 
  		$list = isset($list['warning'])? []: $list;
@@ -41,15 +47,23 @@ class Helpers {
  		foreach ($list as $item) {
  			$attributes = [];
 
- 			foreach ($column as $table_column => $attribute) {
+ 			foreach ($columns as $table_column => $attribute) {
  					$split_lookup = explode(';#', isset($item[$table_column])? $item[$table_column]: '');
-					
-					$attributes[$attribute] = $split_lookup[0];
+
  					if ($split_lookup[0] === 'float') {
  						$split_value = explode('.', $split_lookup[1]);
 
  						$attributes[$attribute] = $split_value[0];
+ 					} else {
+ 						$attributes[$attribute] = $split_lookup[0];
  					}
+
+ 					// Convert value into data type integer
+					if (count($converter) && isset($converter[$attribute])) {
+						if ($converter[$attribute] === DATA_TYPE_INTEGER) {
+							$attributes[$attribute] = intval($attributes[$attribute]);
+						}
+					}
  			}
 
  			$split_key = explode(';#', isset($item[$table_key])? $item[$table_key]: '');

@@ -5,6 +5,12 @@ const REQ_TYPE_EMAIL = 'email';
 const REQ_TYPE_NUMERIC = 'numeric';
 const REQ_TYPE_TEXT = 'text';
 
+/* REQUEST TYPE */
+const DATA_TYPE_INTEGER = 'integer';
+const DATA_TYPE_DECIMAL = 'decimal';
+const DATA_TYPE_STRING = 'string';
+
+
 /* ERROR CODE */
 const ERR_SERVER_SUCCESS = 1;
 const ERR_SERVER_ERROR = 2;

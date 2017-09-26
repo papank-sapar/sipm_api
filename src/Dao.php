@@ -195,7 +195,7 @@ class Dao {
         if ($request->getQueryParam('temuan')) 
             $list_kesimpulan_pihak = $list_kesimpulan_pihak->and_where('Temuan','contains', $request->getQueryParam('temuan'));
 
-        $list_kesimpulan_pihak = Helpers::createLOV($list_kesimpulan_pihak->get(), $select);
+        $list_kesimpulan_pihak = Helpers::createLOV($list_kesimpulan_pihak->get(), $select, 'ID', ['sisa_waktu' => DATA_TYPE_INTEGER]);
         // var_dump($list_kesimpulan_pihak);
         if ($request->getQueryParam('temuan') && count($list_kesimpulan_pihak)) return [];
 
@@ -270,7 +270,7 @@ class Dao {
         return $data;
     }
 
-    public function getPelanggaranPerusahaan($request) {
+    public function getPelanggaranPerPerusahaan($request) {
 
         // Filter Perusahaan
         $select = [
@@ -382,6 +382,22 @@ class Dao {
 
         if (!count($list_peraturan)) return [];
 
+        // Filter kesimpulan_pihak
+        $select = [
+            'ID' => 'id_kesimpulan_pihak',
+            'DPLEshp' => 'id_shp',
+            'Temuan' => 'temuan',
+        ];
+
+        $list_kesimpulan_pihak = $this->sp_client
+            ->query('DPLEKesimpulanPihak')
+            ->fields(array_keys($select));
+
+        $list_kesimpulan_pihak = $list_kesimpulan_pihak
+            ->where('DPLEshp','not_null', '');
+
+        $list_kesimpulan_pihak = Helpers::createLOV($list_kesimpulan_pihak->get(), $select);
+
         $table_peraturan = $list_peraturan;
 
         foreach ($list_peraturan as $id_peraturan => $peraturan) {
@@ -391,12 +407,18 @@ class Dao {
             $list_peraturan[$id_peraturan]['level3'] = Helpers::getParentByLevel(3, $id_peraturan, $table_peraturan);
         }
 
-        return $list_peraturan;
-
-        // Join perusahaan into shp_pihak
+        // Join perusahaan into shp_pihak, key = id_shp_pihak
         foreach ($list_shp_pihak as $id_shp_pihak => $shp_pihak) {
             $list_shp_pihak[$id_shp_pihak]['perusahaan'] = isset($list_perusahaan[$shp_pihak['id_profil']])? $list_perusahaan[$shp_pihak['id_profil']]['perusahaan']: null;
         }
+
+        // Join peraturan into shp_peraturan
+        foreach ($list_shp_peraturan as $id_shp_peraturan => $shp_peraturan) {
+            $list_shp_peraturan[$id_shp_peraturan]['peraturan'] = isset($shp_peraturan['id_peraturan'])? $list_peraturan[$shp_peraturan['id_peraturan']]: [];
+        }
+
+
+        return $list_kesimpulan_pihak;
 
     }
     public function getPeraturan($request) {
@@ -416,7 +438,7 @@ class Dao {
             $list_peraturan = $list_peraturan->and_where('Level','=', $request->getQueryParam('level'));
         }
 
-        $list_peraturan = Helpers::createResults($list_peraturan->get(), $select);
+        $list_peraturan = Helpers::createResults($list_peraturan->get(), $select, ['level' => DATA_TYPE_INTEGER, 'id_peraturan' => DATA_TYPE_INTEGER]);
 
         return $list_peraturan;
     }
