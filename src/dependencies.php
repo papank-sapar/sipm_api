@@ -14,6 +14,10 @@ $container['ReportCtrl'] = function ($c) {
     return new \App\Controllers\ReportCtrl($c);
 };
 
+$container['MasterDataCtrl'] = function ($c) {
+    return new \App\Controllers\MasterDataCtrl($c);
+};
+
 // monolog
 $container['logger'] = function ($c) {
     $settings = $c->get('settings')['logger'];

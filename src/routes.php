@@ -11,3 +11,5 @@ $app->get('/', function ($request, $response, $args) {
 $app->get('/monitoring-tanggapan', 'ReportCtrl:monitoringTanggapan');
 $app->get('/pelanggaran-per-perusahaan', 'ReportCtrl:pelanggaranPerPerusahaan');
 $app->get('/peraturan', 'ReportCtrl:peraturan');
+$app->get('/jenis-pemeriksaan', 'MasterDataCtrl:getJenisPemeriksaan');
+$app->get('/tema-pengawasan', 'MasterDataCtrl:getTemaPengawasan');

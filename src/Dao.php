@@ -21,6 +21,36 @@ class Dao {
         $this->sp_client->lowercaseIndexs(FALSE);
     }
 
+    public function getTemaPengawasan($request) {
+        $select = [
+            'ID' => 'id_tema_pengawasan',
+            'TemaPengawasan' => 'tema_pengawasan'
+        ];
+
+        $list_tema_pengawasan = $this->sp_client
+                ->query('MasterTemaPengawasan')
+                ->fields(array_keys($select));
+        
+        $list_tema_pengawasan = Helpers::createResults($list_tema_pengawasan->get(), $select, ['id_tema_pengawasan' => DATA_TYPE_INTEGER]);
+
+        return $list_tema_pengawasan;
+    }
+
+    public function getJenisPemeriksaan($request) {
+        $select = [
+            'ID' => 'id_jenis_pemeriksaan',
+            'JenisPemeriksaan' => 'jenis_pemeriksaan'
+        ];
+
+        $list_jenis_pemeriksaan = $this->sp_client
+                ->query('MasterJenisPemeriksaan')
+                ->fields(array_keys($select));
+        
+        $list_jenis_pemeriksaan = Helpers::createResults($list_jenis_pemeriksaan->get(), $select, ['id_jenis_pemeriksaan' => DATA_TYPE_INTEGER]);
+
+        return $list_jenis_pemeriksaan;
+    }
+
     public function getMonitoringTanggapan($request) {
 
         // Filter Perusahaan
