@@ -722,4 +722,28 @@ class Dao {
 
         return $list_tim_surat_tugas;
     }
+
+    public function getUser($request) {
+        $select = [
+            'ID' => 'id_user',
+            'NamaLengkap' => 'nama_lengkap',
+        ];
+
+        $list_user = $this->sp_client
+                ->query('UserAccount')
+                ->fields(array_keys($select))
+                ->where('UserGroup', 'not_null', '')
+                ->and_where('NamaLengkap', 'not_null', '');
+       
+        if ($request->getQueryParam('nama_lengkap')) {
+            $list_user = $list_user->and_where('NamaLengkap','contains', $request->getQueryParam('nama_lengkap'));
+        }
+
+        $list_user = Helpers::createResults($list_user->get(), $select, ['id_user' => DATA_TYPE_INTEGER]);
+        
+
+        if (!count($list_user)) return [];
+
+        return $list_user;
+    }
 }
