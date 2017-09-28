@@ -642,4 +642,23 @@ class Dao {
 
         return $list_surat_tugas;
     }
+
+    public function getShpKesimpulanPihak($request) {
+        $select = [
+            'ID' => 'id_shp_kesimpulan_pihak',
+            'DPLEshp' => 'id_shp',
+            'Temuan' => 'temuan',
+        ];
+
+        $list_shp_kesimpulan_pihak = $this->sp_client
+                ->query('DPLEKesimpulanPihak')
+                ->fields(array_keys($select))
+                ->where('DPLEshp', 'not_null', '');
+
+        $list_shp_kesimpulan_pihak = Helpers::createResults($list_shp_kesimpulan_pihak->get(), $select, ['id_shp_kesimpulan_pihak' => DATA_TYPE_INTEGER, 'id_shp' => DATA_TYPE_INTEGER]);
+
+        if (!count($list_shp_kesimpulan_pihak)) return [];
+
+        return $list_shp_kesimpulan_pihak;
+    }
 }
