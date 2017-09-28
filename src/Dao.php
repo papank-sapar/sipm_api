@@ -574,19 +574,72 @@ class Dao {
             'KodePihak' => 'kode_perusahaan',
         ];
 
-        $list_pihak_institusi = $this->sp_client
+        $list_profil_institusi = $this->sp_client
                 ->query('ProfilPihakInstitusi')
                 ->fields(array_keys($select))
                 ->where('MasterProfil', 'not_null', '');
 
         if ($request->getQueryParam('kode_perusahaan')) {
-            $list_pihak_institusi = $list_pihak_institusi->and_where('KodePihak','=', $request->getQueryParam('kode_perusahaan'));
+            $list_profil_institusi = $list_profil_institusi->and_where('KodePihak','=', $request->getQueryParam('kode_perusahaan'));
         }
     
-        $list_pihak_institusi = Helpers::createResults($list_pihak_institusi->get(), $select, ['id_pihak_institusi' => DATA_TYPE_INTEGER, 'id_pihak' => DATA_TYPE_INTEGER]);
+        $list_profil_institusi = Helpers::createResults($list_profil_institusi->get(), $select, ['id_pihak_institusi' => DATA_TYPE_INTEGER, 'id_pihak' => DATA_TYPE_INTEGER]);
 
-        if (!count($list_pihak_institusi)) return [];
+        if (!count($list_profil_institusi)) return [];
 
-        return $list_pihak_institusi;
+        return $list_profil_institusi;
+    }
+
+    public function getShp($request) {
+        $select = [
+            'ID' => 'id_shp',
+            'MasterSuratTugas' => 'id_surat_tugas',
+        ];
+
+        $list_shp = $this->sp_client
+                ->query('DPLEshp')
+                ->fields(array_keys($select))
+                ->where('MasterSuratTugas', 'not_null', '');
+
+        $list_shp = Helpers::createResults($list_shp->get(), $select, ['id_shp' => DATA_TYPE_INTEGER, 'id_surat_tugas' => DATA_TYPE_INTEGER]);
+
+        if (!count($list_shp)) return [];
+
+        return $list_shp;
+    }
+
+    public function getSuratTugas($request) {
+        $select = [
+            'ID' => 'id_surat_tugas',
+            'NomorSuratTugas' => 'nomor_surat_tugas',
+            'AwalPeriode' => 'awal_periode',
+            'AkhirPeriode' => 'akhir_periode',
+            'TemaPengawasan' => 'id_tema_pengawasan',
+            'JenisPemeriksaan' => 'id_jenis_pemeriksaan',
+            'Lokasi' => 'lokasi',
+        ];
+
+        $list_surat_tugas = $this->sp_client
+            ->query('MasterSuratTugas')
+            ->fields(array_keys($select));
+        $list_surat_tugas = $list_surat_tugas
+            ->where('Direktorat','=', 'DPLE');
+
+        if ($request->getQueryParam('awal_periode')) 
+            $list_surat_tugas = $list_surat_tugas->and_where('AwalPeriode','>=',\Thybag\SharepointApi::dateTime($request->getQueryParam('awal_periode')));
+        if ($request->getQueryParam('akhir_periode')) 
+            $list_surat_tugas = $list_surat_tugas->and_where('AkhirPeriode','<=',\Thybag\SharepointApi::dateTime($request->getQueryParam('akhir_periode')));
+        if ($request->getQueryParam('nomor_surat_tugas')) 
+            $list_surat_tugas = $list_surat_tugas->and_where('NomorSuratTugas','contains', $request->getQueryParam('nomor_surat_tugas'));
+        if ($request->getQueryParam('lokasi')) 
+            $list_surat_tugas = $list_surat_tugas->and_where('Lokasi','=', $request->getQueryParam('lokasi'));
+        
+        $list_surat_tugas = Helpers::createResults($list_surat_tugas->get(), $select);
+        
+        if (($request->getQueryParam('awal_periode') || $request->getQueryParam('nomor_surat_tugas') || $request->getQueryParam('akhir_periode')) && !count($list_surat_tugas)) return [];
+
+        if (!count($list_surat_tugas)) return [];
+
+        return $list_surat_tugas;
     }
 }
