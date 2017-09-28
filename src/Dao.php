@@ -634,7 +634,7 @@ class Dao {
         if ($request->getQueryParam('lokasi')) 
             $list_surat_tugas = $list_surat_tugas->and_where('Lokasi','=', $request->getQueryParam('lokasi'));
         
-        $list_surat_tugas = Helpers::createResults($list_surat_tugas->get(), $select, ['id_surat_tugas' => DATA_TYPE_INTEGER, 'tema_pengawasan' => DATA_TYPE_INTEGER, 'jenis_pemeriksaan' => DATA_TYPE_INTEGER]);
+        $list_surat_tugas = Helpers::createResults($list_surat_tugas->get(), $select, ['id_surat_tugas' => DATA_TYPE_INTEGER, 'id_tema_pengawasan' => DATA_TYPE_INTEGER, 'id_jenis_pemeriksaan' => DATA_TYPE_INTEGER]);
         
         if (($request->getQueryParam('awal_periode') || $request->getQueryParam('nomor_surat_tugas') || $request->getQueryParam('akhir_periode')) && !count($list_surat_tugas)) return [];
 
