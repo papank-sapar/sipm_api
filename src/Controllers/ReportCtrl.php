@@ -88,9 +88,9 @@ class ReportCtrl {
         }
     }
 
-    public function getProfil($request, $response, $args) {
+    public function getPihak($request, $response, $args) {
         try {
-            $report = $this->dao->getProfil($request);
+            $report = $this->dao->getPihak($request);
 
             return $response->withJson(
                 Helpers::createResponse(
@@ -126,9 +126,9 @@ class ReportCtrl {
         ));
     }
 
-    public function getProfilInstitusi($request, $response, $args) {
+    public function getPihakInstitusi($request, $response, $args) {
         try {
-            $report = $this->dao->getProfilInstitusi($request);
+            $report = $this->dao->getPihakInstitusi($request);
 
             return $response->withJson(
                 Helpers::createResponse(

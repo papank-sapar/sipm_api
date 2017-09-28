@@ -14,10 +14,10 @@ $app->get('/jenis-pemeriksaan', 'MasterDataCtrl:getJenisPemeriksaan');
 $app->get('/tema-pengawasan', 'MasterDataCtrl:getTemaPengawasan');
 
 $app->get('/peraturan', 'ReportCtrl:getPeraturan');
-$app->get('/profil', 'ReportCtrl:getProfil');
-$app->get('/profil/individu/alamat', 'ReportCtrl:getAlamatIndividu');
-$app->get('/profil/individu/identitas', 'ReportCtrl:getIdentitasIndividu');
-$app->get('/profil/institusi', 'ReportCtrl:getProfilInstitusi');
+$app->get('/pihak', 'ReportCtrl:getPihak');
+$app->get('/pihak/individu/alamat', 'ReportCtrl:getAlamatIndividu');
+$app->get('/pihak/individu/identitas', 'ReportCtrl:getIdentitasIndividu');
+$app->get('/pihak/institusi', 'ReportCtrl:getPihakInstitusi');
 $app->get('/shp', 'ReportCtrl:getShp');
 $app->get('/shp/kesimpulan-pihak', 'ReportCtrl:getShpKesimpulanPihak');
 $app->get('/shp/peraturan', 'ReportCtrl:getShpPeraturan');

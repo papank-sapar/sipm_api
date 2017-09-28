@@ -540,9 +540,9 @@ class Dao {
         return array_values($list_peraturan);
     }
 
-    public function getProfil($request) {
+    public function getPihak($request) {
         $select = [
-            'ID' => 'id_profil',
+            'ID' => 'id_pihak',
             'NamaPihak' => 'pihak',
             'JenisPihak' => 'jenis_pihak',
         ];
@@ -560,14 +560,14 @@ class Dao {
             $list_pihak = $list_pihak->and_where('NamaPihak', 'contains', $request->getQueryParam('pihak'));
         }
 
-        $list_pihak = Helpers::createResults($list_pihak->get(), $select, ['id_profil' => DATA_TYPE_INTEGER]);
+        $list_pihak = Helpers::createResults($list_pihak->get(), $select, ['id_pihak' => DATA_TYPE_INTEGER]);
 
         if (!count($list_pihak)) return [];
 
         return $list_pihak;
     }
 
-    public function getProfilInstitusi($request) {
+    public function getPihakInstitusi($request) {
         $select = [
             'ID' => 'id_pihak_institusi',
             'MasterProfil' => 'id_pihak',
