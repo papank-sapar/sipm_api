@@ -18,6 +18,15 @@ $container['MasterDataCtrl'] = function ($c) {
     return new \App\Controllers\MasterDataCtrl($c);
 };
 
+// // Error handling
+// $container['errorHandler'] = function ($c) {
+//     return function ($request, $response, $exception) use ($c) {
+//         return $c['response']->withStatus(500)
+//                              ->withHeader('Content-Type', 'text/html')
+//                              ->write('Something went wrong!');
+//     };
+// };
+
 // monolog
 $container['logger'] = function ($c) {
     $settings = $c->get('settings')['logger'];

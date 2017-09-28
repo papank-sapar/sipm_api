@@ -110,13 +110,16 @@ class Helpers {
 
 
  	public static function getParentByLevel ($level, $id, $table_peraturan) {
+ 		if (isset($table_peraturan[$id])) {
         if (((int)$table_peraturan[$id]['level'] - 1) < $level){
             return null;
         } else if ($level === ((int)$table_peraturan[$id]['level'] - 1)){
             return $table_peraturan[$id]['id_parent'];
         } else {
             return self::getParentByLevel($level, $table_peraturan[$id]['id_parent'], $table_peraturan);
-        }
-    }
-
+        }	
+ 		} else {
+ 			return null;
+ 		}
+ 	}
  }

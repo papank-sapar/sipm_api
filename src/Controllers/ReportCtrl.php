@@ -58,7 +58,15 @@ class ReportCtrl {
         }
     }
 
-    public function peraturan($request, $response, $args) {
+    public function getCurrentLogin($request, $response, $args) {
+        $db = new Database($this->container->get('settings')['database']);
+        $user = $db->getUserDetail($args['id']);
+        return $response->withJson(Helpers::createResponse(
+                                ERR_SERVER_SUCCESS, "Success.", $user
+        ));
+    }
+
+    public function getPeraturan($request, $response, $args) {
         try {
             $report = $this->dao->getPeraturan($request);
 
@@ -80,7 +88,7 @@ class ReportCtrl {
         }
     }
 
-    public function getCurrentLogin($request, $response, $args) {
+    public function getProfil($request, $response, $args) {
         $db = new Database($this->container->get('settings')['database']);
         $user = $db->getUserDetail($args['id']);
         return $response->withJson(Helpers::createResponse(
@@ -88,4 +96,83 @@ class ReportCtrl {
         ));
     }
 
+    public function getAlamatIndividu($request, $response, $args) {
+        $db = new Database($this->container->get('settings')['database']);
+        $user = $db->getUserDetail($args['id']);
+        return $response->withJson(Helpers::createResponse(
+                                ERR_SERVER_SUCCESS, "Success.", $user
+        ));
+    }
+
+    public function getIdentitasIndividu($request, $response, $args) {
+        $db = new Database($this->container->get('settings')['database']);
+        $user = $db->getUserDetail($args['id']);
+        return $response->withJson(Helpers::createResponse(
+                                ERR_SERVER_SUCCESS, "Success.", $user
+        ));
+    }
+
+    public function getProfilInstitusi($request, $response, $args) {
+        $db = new Database($this->container->get('settings')['database']);
+        $user = $db->getUserDetail($args['id']);
+        return $response->withJson(Helpers::createResponse(
+                                ERR_SERVER_SUCCESS, "Success.", $user
+        ));
+    }
+
+    public function getShp($request, $response, $args) {
+        $db = new Database($this->container->get('settings')['database']);
+        $user = $db->getUserDetail($args['id']);
+        return $response->withJson(Helpers::createResponse(
+                                ERR_SERVER_SUCCESS, "Success.", $user
+        ));
+    }
+
+    public function getShpKesimpulanPihak($request, $response, $args) {
+        $db = new Database($this->container->get('settings')['database']);
+        $user = $db->getUserDetail($args['id']);
+        return $response->withJson(Helpers::createResponse(
+                                ERR_SERVER_SUCCESS, "Success.", $user
+        ));
+    }
+
+    public function getShpPeraturan($request, $response, $args) {
+        $db = new Database($this->container->get('settings')['database']);
+        $user = $db->getUserDetail($args['id']);
+        return $response->withJson(Helpers::createResponse(
+                                ERR_SERVER_SUCCESS, "Success.", $user
+        ));
+    }
+
+    public function getShpPihak($request, $response, $args) {
+        $db = new Database($this->container->get('settings')['database']);
+        $user = $db->getUserDetail($args['id']);
+        return $response->withJson(Helpers::createResponse(
+                                ERR_SERVER_SUCCESS, "Success.", $user
+        ));
+    }
+
+    public function getSuratTugas($request, $response, $args) {
+        $db = new Database($this->container->get('settings')['database']);
+        $user = $db->getUserDetail($args['id']);
+        return $response->withJson(Helpers::createResponse(
+                                ERR_SERVER_SUCCESS, "Success.", $user
+        ));
+    }
+
+    public function getTimSuratTugas($request, $response, $args) {
+        $db = new Database($this->container->get('settings')['database']);
+        $user = $db->getUserDetail($args['id']);
+        return $response->withJson(Helpers::createResponse(
+                                ERR_SERVER_SUCCESS, "Success.", $user
+        ));
+    }
+
+    public function getUser($request, $response, $args) {
+        $db = new Database($this->container->get('settings')['database']);
+        $user = $db->getUserDetail($args['id']);
+        return $response->withJson(Helpers::createResponse(
+                                ERR_SERVER_SUCCESS, "Success.", $user
+        ));
+    }
 }

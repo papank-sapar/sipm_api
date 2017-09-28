@@ -317,10 +317,32 @@ class Dao {
             $list_perusahaan = $list_perusahaan->and_where('NamaPihak','contains', $request->getQueryParam('perusahaan'));
         }
 
-        $list_perusahaan = Helpers::createLOV($list_perusahaan->get(), $select);
+        $list_perusahaan = Helpers::createResults($list_perusahaan->get(), $select);
 
         if ($request->getQueryParam('perusahaan') && !count($list_perusahaan)) return [];
 
+        return $list_perusahaan;
+
+        // Filter Profil Perusahaan
+        $select = [
+            'ID' => 'id_profil_perusahaan',
+            'MasterProfil' => 'id_profil',
+            'KodePihak' => 'kode_perusahaan',
+        ];
+
+        $list_profil_perusahaan = $this->sp_client
+            ->query('ProfilPihakInstitusi')
+            ->fields(array_keys($select))
+            ->where("MasterProfil", "not_null", "");
+
+        // Filter kode perusahaan
+        if ($request->getQueryParam('kode_perusahaan')) {
+            $list_profil_perusahaan = $list_profil_perusahaan->and_where('KodePihak','contains', $request->getQueryParam('kode_perusahaan'));
+        }
+
+        $list_profil_perusahaan = Helpers::createResults($list_profil_perusahaan->get(), $select);
+
+        if ($request->getQueryParam('perusahaan') && !count($list_profil_perusahaan)) return [];
 
         // Filter surat tugas
         $select = [
@@ -412,6 +434,30 @@ class Dao {
 
         if (!count($list_peraturan)) return [];
 
+        $table_peraturan = $list_peraturan;
+
+        foreach ($list_peraturan as $id_peraturan => $peraturan) {
+            $level1 = Helpers::getParentByLevel(1, $id_peraturan, $table_peraturan);
+            $level2 = Helpers::getParentByLevel(2, $id_peraturan, $table_peraturan);
+            $level3 = Helpers::getParentByLevel(3, $id_peraturan, $table_peraturan);
+            
+            // if (!($level1 && $level2 && $level3)) {
+            //     // unset($list_peraturan[$id_peraturan]);
+            //     continue;
+            // }
+
+            $list_peraturan[$id_peraturan]['level'] = (int) $list_peraturan[$id_peraturan]['level'];
+            $list_peraturan[$id_peraturan]['level1'] = $level1;
+            $list_peraturan[$id_peraturan]['level2'] = $level2;
+            $list_peraturan[$id_peraturan]['level3'] = $level3;
+
+            $list_grup_peraturan = [$list_peraturan[$id_peraturan]['level1'], $list_peraturan[$id_peraturan]['level2'], $list_peraturan[$id_peraturan]['level3']];
+
+            $list_peraturan[$id_peraturan]['grup_peraturan'] = implode(".", array_filter($list_grup_peraturan));
+        }
+
+        return $list_peraturan;
+
         // Filter kesimpulan_pihak
         $select = [
             'ID' => 'id_kesimpulan_pihak',
@@ -428,15 +474,6 @@ class Dao {
 
         $list_kesimpulan_pihak = Helpers::createLOV($list_kesimpulan_pihak->get(), $select);
 
-        $table_peraturan = $list_peraturan;
-
-        foreach ($list_peraturan as $id_peraturan => $peraturan) {
-            $list_peraturan[$id_peraturan]['level'] = (int) $list_peraturan[$id_peraturan]['level'];
-            $list_peraturan[$id_peraturan]['level1'] = Helpers::getParentByLevel(1, $id_peraturan, $table_peraturan);
-            $list_peraturan[$id_peraturan]['level2'] = Helpers::getParentByLevel(2, $id_peraturan, $table_peraturan);
-            $list_peraturan[$id_peraturan]['level3'] = Helpers::getParentByLevel(3, $id_peraturan, $table_peraturan);
-        }
-
         // Join perusahaan into shp_pihak, key = id_shp_pihak
         foreach ($list_shp_pihak as $id_shp_pihak => $shp_pihak) {
             $list_shp_pihak[$id_shp_pihak]['perusahaan'] = isset($list_perusahaan[$shp_pihak['id_profil']])? $list_perusahaan[$shp_pihak['id_profil']]['perusahaan']: null;
@@ -447,29 +484,59 @@ class Dao {
             $list_shp_peraturan[$id_shp_peraturan]['peraturan'] = isset($shp_peraturan['id_peraturan'])? $list_peraturan[$shp_peraturan['id_peraturan']]: [];
         }
 
-
         return $list_kesimpulan_pihak;
-
     }
+
     public function getPeraturan($request) {
 
         $select = [
             'ID' => 'id_peraturan',
             'Peraturan' => 'peraturan',
-            'Level' => 'level'
+            'Level' => 'level',
+            'Parent' => 'id_parent',
+            'Keterangan' => 'keterangan',
         ];
 
         $list_peraturan = $this->sp_client
             ->query('MasterPeraturan')
-            ->fields(array_keys($select));
-        $list_peraturan = $list_peraturan->where('Peraturan', 'not_null', '');
+            ->fields(array_keys($select))
+            ->where('Peraturan', 'not_null', '');
+
+        if ($request->getQueryParam('id_parent')) {
+            $list_peraturan = $list_peraturan->and_where('Parent','=', $request->getQueryParam('id_parent'));
+        }
 
         if ($request->getQueryParam('level')) {
+            if (intval($request->getQueryParam('level')) > 3) return [];
             $list_peraturan = $list_peraturan->and_where('Level','=', $request->getQueryParam('level'));
         }
 
-        $list_peraturan = Helpers::createResults($list_peraturan->get(), $select, ['level' => DATA_TYPE_INTEGER, 'id_peraturan' => DATA_TYPE_INTEGER]);
+        $list_peraturan = Helpers::createLOV($list_peraturan->get(), $select, "ID",['level' => DATA_TYPE_INTEGER, 'id_peraturan' => DATA_TYPE_INTEGER, 'id_parent' => DATA_TYPE_INTEGER]);
+        
+        if (!count($list_peraturan)) return [];
 
-        return $list_peraturan;
+        $table_peraturan = $list_peraturan;
+
+        foreach ($list_peraturan as $id_peraturan => $peraturan) {
+            $level1 = Helpers::getParentByLevel(1, $id_peraturan, $table_peraturan);
+            $level2 = Helpers::getParentByLevel(2, $id_peraturan, $table_peraturan);
+            $level3 = Helpers::getParentByLevel(3, $id_peraturan, $table_peraturan);
+            
+            // if (!($level1 && $level2 && $level3)) {
+            //     // unset($list_peraturan[$id_peraturan]);
+            //     continue;
+            // }
+
+            $list_peraturan[$id_peraturan]['level'] = (int) $list_peraturan[$id_peraturan]['level'];
+            $list_peraturan[$id_peraturan]['level1'] = $level1;
+            $list_peraturan[$id_peraturan]['level2'] = $level2;
+            $list_peraturan[$id_peraturan]['level3'] = $level3;
+
+            $list_grup_peraturan = [$list_peraturan[$id_peraturan]['level1'], $list_peraturan[$id_peraturan]['level2'], $list_peraturan[$id_peraturan]['level3']];
+
+            $list_peraturan[$id_peraturan]['grup_peraturan'] = implode(".", array_filter($list_grup_peraturan));
+        }
+
+        return array_values($list_peraturan);
     }
 }
