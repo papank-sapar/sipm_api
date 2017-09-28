@@ -664,7 +664,7 @@ class Dao {
 
     public function getShpPeraturan($request) {
         $select = [
-            'ID' => 'id_shp_kesimpulan_pihak',
+            'ID' => 'id_shp_peraturan',
             'Peraturan' => 'id_peraturan',
             'DPLEKesimpulanPihak' => 'id_shp_kesimpulan_pihak',
         ];
@@ -675,10 +675,51 @@ class Dao {
                 ->where('Peraturan', 'not_null', '')
                 ->and_where('DPLEKesimpulanPihak', 'not_null', '');
 
-        $list_shp_peraturan = Helpers::createResults($list_shp_peraturan->get(), $select, ['id_peraturan' => DATA_TYPE_INTEGER, 'id_shp_kesimpulan_pihak' => DATA_TYPE_INTEGER]);
+        $list_shp_peraturan = Helpers::createResults($list_shp_peraturan->get(), $select, ['id_shp_peraturan' => DATA_TYPE_INTEGER, 'id_peraturan' => DATA_TYPE_INTEGER, 'id_shp_kesimpulan_pihak' => DATA_TYPE_INTEGER]);
 
         if (!count($list_shp_peraturan)) return [];
 
         return $list_shp_peraturan;
+    }
+
+    public function getShpPihak($request) {
+        $select = [
+            'ID' => 'id_shp_pihak',
+            'MasterProfil' => 'id_profil',
+            'DPLEKesimpulanPihak' => 'id_shp_kesimpulan_pihak',
+        ];
+
+        $list_shp_pihak = $this->sp_client
+                ->query('DPLESHPPihak')
+                ->fields(array_keys($select))
+                ->where('MasterProfil', 'not_null', '')
+                ->and_where('DPLEKesimpulanPihak', 'not_null', '');
+
+        $list_shp_pihak = Helpers::createResults($list_shp_pihak->get(), $select, ['id_shp_pihak' => DATA_TYPE_INTEGER, 'id_profil' => DATA_TYPE_INTEGER, 'id_shp_kesimpulan_pihak' => DATA_TYPE_INTEGER]);
+
+        if (!count($list_shp_pihak)) return [];
+
+        return $list_shp_pihak;
+    }
+
+    public function getTimSuratTugas($request) {
+        $select = [
+            'ID' => 'id_tim_surat_tugas',
+            'SuratTugas' => 'id_surat_tugas',
+            'UserAccount' => 'id_user',
+        ];
+
+        $list_tim_surat_tugas = $this->sp_client
+                ->query('TimSuratTugas')
+                ->fields(array_keys($select))
+                ->where('PIC', '=', true)
+                ->and_where('SuratTugas', 'not_null', '')
+                ->and_where('UserAccount', 'not_null', '');
+
+        $list_tim_surat_tugas = Helpers::createResults($list_tim_surat_tugas->get(), $select, ['id_tim_surat_tugas' => DATA_TYPE_INTEGER, 'id_surat_tugas' => DATA_TYPE_INTEGER, 'id_user' => DATA_TYPE_INTEGER]);
+
+        if (!count($list_tim_surat_tugas)) return [];
+
+        return $list_tim_surat_tugas;
     }
 }

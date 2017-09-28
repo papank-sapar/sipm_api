@@ -215,11 +215,25 @@ class ReportCtrl {
     }
 
     public function getShpPihak($request, $response, $args) {
-        $db = new Database($this->container->get('settings')['database']);
-        $user = $db->getUserDetail($args['id']);
-        return $response->withJson(Helpers::createResponse(
-                                ERR_SERVER_SUCCESS, "Success.", $user
-        ));
+        try {
+            $report = $this->dao->getShpPihak($request);
+
+            return $response->withJson(
+                Helpers::createResponse(
+                    ERR_SERVER_SUCCESS, 
+                    "Success", 
+                    $report
+                )
+            );
+        } catch (Exception $e) {
+            return $response->withJson(
+                Helpers::createResponse(
+                    ERR_SERVER_ERROR, 
+                    $e, 
+                    []
+                )
+            );
+        }
     }
 
     public function getSuratTugas($request, $response, $args) {
@@ -245,11 +259,25 @@ class ReportCtrl {
     }
 
     public function getTimSuratTugas($request, $response, $args) {
-        $db = new Database($this->container->get('settings')['database']);
-        $user = $db->getUserDetail($args['id']);
-        return $response->withJson(Helpers::createResponse(
-                                ERR_SERVER_SUCCESS, "Success.", $user
-        ));
+        try {
+            $report = $this->dao->getTimSuratTugas($request);
+
+            return $response->withJson(
+                Helpers::createResponse(
+                    ERR_SERVER_SUCCESS, 
+                    "Success", 
+                    $report
+                )
+            );
+        } catch (Exception $e) {
+            return $response->withJson(
+                Helpers::createResponse(
+                    ERR_SERVER_ERROR, 
+                    $e, 
+                    []
+                )
+            );
+        }
     }
 
     public function getUser($request, $response, $args) {
