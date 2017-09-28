@@ -685,7 +685,7 @@ class Dao {
     public function getShpPihak($request) {
         $select = [
             'ID' => 'id_shp_pihak',
-            'MasterProfil' => 'id_profil',
+            'MasterProfil' => 'id_pihak',
             'DPLEKesimpulanPihak' => 'id_shp_kesimpulan_pihak',
         ];
 
@@ -695,7 +695,7 @@ class Dao {
                 ->where('MasterProfil', 'not_null', '')
                 ->and_where('DPLEKesimpulanPihak', 'not_null', '');
 
-        $list_shp_pihak = Helpers::createResults($list_shp_pihak->get(), $select, ['id_shp_pihak' => DATA_TYPE_INTEGER, 'id_profil' => DATA_TYPE_INTEGER, 'id_shp_kesimpulan_pihak' => DATA_TYPE_INTEGER]);
+        $list_shp_pihak = Helpers::createResults($list_shp_pihak->get(), $select, ['id_shp_pihak' => DATA_TYPE_INTEGER, 'id_pihak' => DATA_TYPE_INTEGER, 'id_shp_kesimpulan_pihak' => DATA_TYPE_INTEGER]);
 
         if (!count($list_shp_pihak)) return [];
 
