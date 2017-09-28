@@ -539,4 +539,31 @@ class Dao {
 
         return array_values($list_peraturan);
     }
+
+    public function getProfil($request) {
+        $select = [
+            'ID' => 'id_profil',
+            'NamaPihak' => 'pihak',
+            'JenisPihak' => 'jenis_pihak',
+        ];
+
+        $list_pihak = $this->sp_client
+                ->query('MasterProfil')
+                ->fields(array_keys($select))
+                ->where('JenisPihak', 'not_null', '');
+
+        if ($request->getQueryParam('jenis_pihak')) {
+            $list_pihak = $list_pihak->and_where('JenisPihak','=', $request->getQueryParam('jenis_pihak'));
+        }
+    
+        if ($request->getQueryParam('pihak')) {
+            $list_pihak = $list_pihak->and_where('NamaPihak', 'contains', $request->getQueryParam('pihak'));
+        }
+
+        $list_pihak = Helpers::createResults($list_pihak->get(), $select, ['id_profil' => DATA_TYPE_INTEGER]);
+
+        if (!count($list_pihak)) return [];
+
+        return $list_pihak;
+    }
 }

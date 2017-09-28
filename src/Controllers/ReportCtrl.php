@@ -89,11 +89,25 @@ class ReportCtrl {
     }
 
     public function getProfil($request, $response, $args) {
-        $db = new Database($this->container->get('settings')['database']);
-        $user = $db->getUserDetail($args['id']);
-        return $response->withJson(Helpers::createResponse(
-                                ERR_SERVER_SUCCESS, "Success.", $user
-        ));
+        try {
+            $report = $this->dao->getProfil($request);
+
+            return $response->withJson(
+                Helpers::createResponse(
+                    ERR_SERVER_SUCCESS, 
+                    "Success", 
+                    $report
+                )
+            );
+        } catch (Exception $e) {
+            return $response->withJson(
+                Helpers::createResponse(
+                    ERR_SERVER_ERROR, 
+                    $e, 
+                    []
+                )
+            );
+        }
     }
 
     public function getAlamatIndividu($request, $response, $args) {
