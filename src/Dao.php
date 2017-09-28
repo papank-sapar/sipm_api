@@ -566,4 +566,27 @@ class Dao {
 
         return $list_pihak;
     }
+
+    public function getProfilInstitusi($request) {
+        $select = [
+            'ID' => 'id_pihak_institusi',
+            'MasterProfil' => 'id_pihak',
+            'KodePihak' => 'kode_perusahaan',
+        ];
+
+        $list_pihak_institusi = $this->sp_client
+                ->query('ProfilPihakInstitusi')
+                ->fields(array_keys($select))
+                ->where('MasterProfil', 'not_null', '');
+
+        if ($request->getQueryParam('kode_perusahaan')) {
+            $list_pihak_institusi = $list_pihak_institusi->and_where('KodePihak','=', $request->getQueryParam('kode_perusahaan'));
+        }
+    
+        $list_pihak_institusi = Helpers::createResults($list_pihak_institusi->get(), $select, ['id_pihak_institusi' => DATA_TYPE_INTEGER, 'id_pihak' => DATA_TYPE_INTEGER]);
+
+        if (!count($list_pihak_institusi)) return [];
+
+        return $list_pihak_institusi;
+    }
 }

@@ -127,11 +127,25 @@ class ReportCtrl {
     }
 
     public function getProfilInstitusi($request, $response, $args) {
-        $db = new Database($this->container->get('settings')['database']);
-        $user = $db->getUserDetail($args['id']);
-        return $response->withJson(Helpers::createResponse(
-                                ERR_SERVER_SUCCESS, "Success.", $user
-        ));
+        try {
+            $report = $this->dao->getProfilInstitusi($request);
+
+            return $response->withJson(
+                Helpers::createResponse(
+                    ERR_SERVER_SUCCESS, 
+                    "Success", 
+                    $report
+                )
+            );
+        } catch (Exception $e) {
+            return $response->withJson(
+                Helpers::createResponse(
+                    ERR_SERVER_ERROR, 
+                    $e, 
+                    []
+                )
+            );
+        }
     }
 
     public function getShp($request, $response, $args) {
