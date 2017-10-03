@@ -532,9 +532,11 @@ class Dao {
             $list_peraturan[$id_peraturan]['level2'] = $level2;
             $list_peraturan[$id_peraturan]['level3'] = $level3;
 
+            $list_tracking_peraturan = Helpers::trackingPeraturan($table_peraturan, $id_peraturan);
             $list_grup_peraturan = [$list_peraturan[$id_peraturan]['level1'], $list_peraturan[$id_peraturan]['level2'], $list_peraturan[$id_peraturan]['level3']];
 
             $list_peraturan[$id_peraturan]['grup_peraturan'] = implode(".", array_filter($list_grup_peraturan));
+            $list_peraturan[$id_peraturan]['tracking_peraturan'] = implode(".", array_reverse($list_tracking_peraturan));
         }
 
         return array_values($list_peraturan);

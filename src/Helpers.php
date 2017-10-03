@@ -108,18 +108,31 @@ class Helpers {
  		}
  	}
 
-
+ 	// Get parent peraturan
  	public static function getParentByLevel ($level, $id, $table_peraturan) {
  		if (isset($table_peraturan[$id])) {
-        if (((int)$table_peraturan[$id]['level'] - 1) < $level){
-            return null;
-        } else if ($level === ((int)$table_peraturan[$id]['level'] - 1)){
-            return $table_peraturan[$id]['id_parent'];
-        } else {
-            return self::getParentByLevel($level, $table_peraturan[$id]['id_parent'], $table_peraturan);
-        }	
+	        if (((int)$table_peraturan[$id]['level'] - 1) < $level){
+	            return null;
+	        } else if ($level === ((int)$table_peraturan[$id]['level'] - 1)){
+	            return $table_peraturan[$id]['id_parent'];
+	        } else {
+	            return self::getParentByLevel($level, $table_peraturan[$id]['id_parent'], $table_peraturan);
+	        }	
  		} else {
  			return null;
+ 		}
+ 	}
+
+ 	// Get tracking peraturan
+ 	public static function trackingPeraturan ($table_peraturan, $id_peraturan, $list_tracking_peraturan = []) {
+ 		if ($table_peraturan[$id_peraturan]['level'] === 1) {
+ 			$list_tracking_peraturan[] = $table_peraturan[$id_peraturan]['peraturan'];
+
+ 			return $list_tracking_peraturan;
+ 		} else {
+ 			$list_tracking_peraturan[] = $table_peraturan[$id_peraturan]['peraturan'];
+
+ 			return self::trackingPeraturan($table_peraturan, $table_peraturan[$id_peraturan]['id_parent'], $list_tracking_peraturan);
  		}
  	}
  }
