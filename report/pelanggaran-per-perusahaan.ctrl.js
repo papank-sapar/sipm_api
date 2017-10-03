@@ -143,7 +143,9 @@ angular.module('astra.Login')
                                 pelanggaranPerPerusahaanList[j]['jumlah'] = pelanggaranPerPerusahaanTable().filter({ id_peraturan: distinctPelanggaran[j] }).count()
                             }
 
-                            temuanByPerusahaan.push({ perusahaan: perusahaanList[i], pelanggaran: pelanggaranPerPerusahaanList })
+                            pelanggaranPerPerusahaanList = TAFFY(pelanggaranPerPerusahaanList)
+
+                            temuanByPerusahaan.push({ perusahaan: perusahaanList[i], pelanggaran: pelanggaranPerPerusahaanList().order('level asec, peraturan asec').get() })
                         }
 
                         console.log("temuanByPerusahaan")

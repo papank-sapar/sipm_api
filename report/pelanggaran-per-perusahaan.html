@@ -43,11 +43,11 @@
                     <tr ng-repeat-start="temuanByPerusahaan in temuanByPerusahaanList">
                         <td rowspan="{{temuanByPerusahaan.pelanggaran.length}}">{{$index + 1}}</td>
                         <td rowspan="{{temuanByPerusahaan.pelanggaran.length}}">{{temuanByPerusahaan.perusahaan}}</td>
-                        <td>{{temuanByPerusahaan.pelanggaran[0].peraturan}}</td>
+                        <td>{{temuanByPerusahaan.pelanggaran[0].tracking_peraturan}}</td>
                         <td>{{temuanByPerusahaan.pelanggaran[0].jumlah}}</td>
                     </tr>
                     <tr ng-repeat-end ng-repeat="pelanggaran in temuanByPerusahaan.pelanggaran" ng-if="!$first">
-                        <td>{{pelanggaran.peraturan}}</td>
+                        <td>{{pelanggaran.tracking_peraturan}}</td>
                         <td>{{pelanggaran.jumlah}}</td>
                     </tr>
                 </tbody>
