@@ -617,6 +617,34 @@ class Dao {
         return $list_profil_individu;
     }
 
+    public function getIdentitasIndividu($request) {
+        $select = [
+            'ID' => 'id_identitas_individu',
+            'JenisIdentitas' => 'jenis_identitas',
+            'NomorIdentitas' => 'nomor_identitas',
+            'ProfilPihak' => 'id_pihak_individu',
+        ];
+
+        $list_profil_individu = $this->sp_client
+                ->query('IdentitasProfilPihak')
+                ->fields(array_keys($select))
+                ->where('ProfilPihak', 'not_null', '');
+
+        if ($request->getQueryParam('jenis_identitas')) {
+            $list_profil_individu = $list_profil_individu->and_where('JenisIdentitas','=', $request->getQueryParam('jenis_identitas'));
+        }
+
+        if ($request->getQueryParam('nomor_identitas')) {
+            $list_profil_individu = $list_profil_individu->and_where('NomorIdentitas','=', $request->getQueryParam('nomor_identitas'));
+        }
+    
+        $list_profil_individu = Helpers::createResults($list_profil_individu->get(), $select, ['id_identitas_individu' => DATA_TYPE_INTEGER, 'id_pihak_individu' => DATA_TYPE_INTEGER]);
+
+        if (!count($list_profil_individu)) return [];
+
+        return $list_profil_individu;
+    }
+
     public function getShp($request) {
         $select = [
             'ID' => 'id_shp',
