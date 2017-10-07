@@ -110,6 +110,28 @@ class ReportCtrl {
         }
     }
 
+    public function getPihakIndividu($request, $response, $args) {
+        try {
+            $report = $this->dao->getPihakIndividu($request);
+
+            return $response->withJson(
+                Helpers::createResponse(
+                    ERR_SERVER_SUCCESS, 
+                    "Success", 
+                    $report
+                )
+            );
+        } catch (Exception $e) {
+            return $response->withJson(
+                Helpers::createResponse(
+                    ERR_SERVER_ERROR, 
+                    $e, 
+                    []
+                )
+            );
+        }
+    }
+
     public function getAlamatIndividu($request, $response, $args) {
         $db = new Database($this->container->get('settings')['database']);
         $user = $db->getUserDetail($args['id']);

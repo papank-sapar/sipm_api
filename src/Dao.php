@@ -592,6 +592,31 @@ class Dao {
         return $list_profil_institusi;
     }
 
+    public function getPihakIndividu($request) {
+        $select = [
+            'ID' => 'id_pihak_individu',
+            'MasterProfil' => 'id_pihak',
+            'TempatLahir' => 'tempat_lahir',
+            'JenisKelamin' => 'jenis_kelamin',
+            'TanggalLahir' => 'tanggal_lahir',
+        ];
+
+        $list_profil_individu = $this->sp_client
+                ->query('MasterProfilPihak')
+                ->fields(array_keys($select))
+                ->where('MasterProfil', 'not_null', '');
+
+        if ($request->getQueryParam('tempat_lahir')) {
+            $list_profil_individu = $list_profil_individu->and_where('TempatLahir','contains', $request->getQueryParam('tempat_lahir'));
+        }
+    
+        $list_profil_individu = Helpers::createResults($list_profil_individu->get(), $select, ['id_pihak_individu' => DATA_TYPE_INTEGER, 'id_pihak' => DATA_TYPE_INTEGER]);
+
+        if (!count($list_profil_individu)) return [];
+
+        return $list_profil_individu;
+    }
+
     public function getShp($request) {
         $select = [
             'ID' => 'id_shp',

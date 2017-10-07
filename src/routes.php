@@ -15,6 +15,7 @@ $app->get('/tema-pengawasan', 'MasterDataCtrl:getTemaPengawasan');
 
 $app->get('/peraturan', 'ReportCtrl:getPeraturan');
 $app->get('/pihak', 'ReportCtrl:getPihak');
+$app->get('/pihak/individu', 'ReportCtrl:getPihakIndividu');
 $app->get('/pihak/individu/alamat', 'ReportCtrl:getAlamatIndividu');
 $app->get('/pihak/individu/identitas', 'ReportCtrl:getIdentitasIndividu');
 $app->get('/pihak/institusi', 'ReportCtrl:getPihakInstitusi');
