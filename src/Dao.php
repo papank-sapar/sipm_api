@@ -625,24 +625,52 @@ class Dao {
             'ProfilPihak' => 'id_pihak_individu',
         ];
 
-        $list_profil_individu = $this->sp_client
+        $list_identitas_individu = $this->sp_client
                 ->query('IdentitasProfilPihak')
                 ->fields(array_keys($select))
                 ->where('ProfilPihak', 'not_null', '');
 
         if ($request->getQueryParam('jenis_identitas')) {
-            $list_profil_individu = $list_profil_individu->and_where('JenisIdentitas','=', $request->getQueryParam('jenis_identitas'));
+            $list_identitas_individu = $list_identitas_individu->and_where('JenisIdentitas','=', $request->getQueryParam('jenis_identitas'));
         }
 
         if ($request->getQueryParam('nomor_identitas')) {
-            $list_profil_individu = $list_profil_individu->and_where('NomorIdentitas','=', $request->getQueryParam('nomor_identitas'));
+            $list_identitas_individu = $list_identitas_individu->and_where('NomorIdentitas','=', $request->getQueryParam('nomor_identitas'));
         }
     
-        $list_profil_individu = Helpers::createResults($list_profil_individu->get(), $select, ['id_identitas_individu' => DATA_TYPE_INTEGER, 'id_pihak_individu' => DATA_TYPE_INTEGER]);
+        $list_identitas_individu = Helpers::createResults($list_identitas_individu->get(), $select, ['id_identitas_individu' => DATA_TYPE_INTEGER, 'id_pihak_individu' => DATA_TYPE_INTEGER]);
 
-        if (!count($list_profil_individu)) return [];
+        if (!count($list_identitas_individu)) return [];
 
-        return $list_profil_individu;
+        return $list_identitas_individu;
+    }
+
+    public function getAlamatIndividu($request) {
+        $select = [
+            'ID' => 'id_alamat_individu',
+            'JenisAlamat' => 'jenis_alamat',
+            'Alamat' => 'alamat',
+            'ProfilPihak' => 'id_pihak_individu',
+        ];
+
+        $list_alamat_individu = $this->sp_client
+                ->query('AlamatProfilPIhak')
+                ->fields(array_keys($select))
+                ->where('ProfilPihak', 'not_null', '');
+
+        if ($request->getQueryParam('jenis_alamat')) {
+            $list_alamat_individu = $list_alamat_individu->and_where('JenisAlamat','=', $request->getQueryParam('jenis_alamat'));
+        }
+
+        if ($request->getQueryParam('alamat')) {
+            $list_alamat_individu = $list_alamat_individu->and_where('Alamat','contains', $request->getQueryParam('alamat'));
+        }
+    
+        $list_alamat_individu = Helpers::createResults($list_alamat_individu->get(), $select, ['id_alamat_individu' => DATA_TYPE_INTEGER, 'id_pihak_individu' => DATA_TYPE_INTEGER]);
+
+        if (!count($list_alamat_individu)) return [];
+
+        return $list_alamat_individu;
     }
 
     public function getShp($request) {
