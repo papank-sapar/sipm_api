@@ -731,6 +731,7 @@ class Dao {
             'ID' => 'id_shp_kesimpulan_pihak',
             'DPLEshp' => 'id_shp',
             'Temuan' => 'temuan',
+            'JenisRekomendasi' => 'id_jenis_rekomendasi'
         ];
 
         $list_shp_kesimpulan_pihak = $this->sp_client
@@ -738,7 +739,7 @@ class Dao {
                 ->fields(array_keys($select))
                 ->where('DPLEshp', 'not_null', '');
 
-        $list_shp_kesimpulan_pihak = Helpers::createResults($list_shp_kesimpulan_pihak->get(), $select, ['id_shp_kesimpulan_pihak' => DATA_TYPE_INTEGER, 'id_shp' => DATA_TYPE_INTEGER]);
+        $list_shp_kesimpulan_pihak = Helpers::createResults($list_shp_kesimpulan_pihak->get(), $select, ['id_shp_kesimpulan_pihak' => DATA_TYPE_INTEGER, 'id_shp' => DATA_TYPE_INTEGER, 'id_jenis_rekomendasi' => DATA_TYPE_INTEGER]);
 
         if (!count($list_shp_kesimpulan_pihak)) return [];
 
