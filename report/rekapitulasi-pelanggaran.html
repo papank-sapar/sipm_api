@@ -1,0 +1,57 @@
+<section class="content-header">
+    <h1>&nbsp;</h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li>User</li>
+        <li class="active">Input User</li>
+    </ol>
+</section>
+<section class="content">
+    <div class="box box-info">
+        <div class="box-header with-border">
+            <h3 class="box-title">Rekapitulasi Pelanggaran</h3>
+        </div>
+        <div class="box-body">
+            <input type="" ng-model="filterData.awalPeriode" name="" placeholder="Awal Periode"><br>
+            <input type="" ng-model="filterData.akhirPeriode" name="" placeholder="Akhir Periode"><br>
+            <input type="" ng-model="filterData.jenisPerusahaan" name="" placeholder="Jenis Perusahaan"><br>
+            <button class="btn btn-primary btn-sm" ng-click="fetch()">Get Data</button>
+            <h3>Daftar Perusahaan yang memiliki Pelanggaran</h3>
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <th>No</th>
+                    <th>Perusahaan</th>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="perusahaan in perusahaanList">
+                        <td>{{$index + 1}}</td>
+                        <td>{{perusahaan}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <br>
+            <table class="table table-bordered">
+                <thead>
+                    <th>No</th>
+                    <th>Perusahaan</th>
+                    <th>Jumlah Pemeriksaan</th>
+                    <th>Jumlah Pelanggaran</th>
+                    <th>Aksi</th>
+                </thead>
+                <tbody>
+                    <tr ng-if="!temuanByPerusahaanList.length">
+                        <td colspan="5">Tidak ada data</td>
+                    </tr>
+                    <tr ng-repeat="temuanByPerusahaan in temuanByPerusahaanList">
+                        <td>{{$index + 1}}</td>
+                        <td>{{temuanByPerusahaan.perusahaan}}</td>
+                        <td>{{temuanByPerusahaan.jumlah_pemeriksaan}}</td>
+                        <td>{{temuanByPerusahaan.jumlah_pelanggaran}}</td>
+                        <td><button class="btn btn-primary btn-sm">Detil</button></td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</section>

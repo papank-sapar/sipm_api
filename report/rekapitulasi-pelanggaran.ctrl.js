@@ -1,12 +1,12 @@
 'use strict';
 
 angular.module('astra.Login')
-    .controller('PelanggaranPerPerusahaanCtrl', ['$templateCache', '$http', '$scope', '$rootScope', '$location', '$cookies', 'CONSTANT',
-        function($templateCache, $http, $scope, $rootScope, $location, $cookies, CONSTANT) {
+    .controller('RekapitulasiPelanggaranCtrl', ['$http', '$scope',
+        function($http, $scope) {
             var baseURL = 'http://112.78.191.125:8080/';
             $scope.filterData = {}
             // Grup Surat Tugas
-            var userTable, timSuratTugasTable, suratTugasTable, shpTable;
+            var suratTugasTable, shpTable;
 
             // Grup Peraturan
             var peraturanTable, shpPeraturanTable;
@@ -62,21 +62,6 @@ angular.module('astra.Login')
                     .then(function(response) {
                         shpPihakTable = TAFFY(response.data.data);
 
-                        filter = '';
-                        if ($scope.filterData.PIC) {
-                            filter = "?nama_lengkap=" + $scope.filterData.PIC
-                        }
-
-                        return $http({ url: baseURL + "user" + filter })
-                    })
-                    .then(function(response) {
-                        userTable = TAFFY(response.data.data);
-
-                        return $http({ url: baseURL + "surat-tugas/tim" })
-                    })
-                    .then(function(response) {
-                        timSuratTugasTable = TAFFY(response.data.data);
-
                         return $http({ url: baseURL + "shp" })
                     })
                     .then(function(response) {
@@ -99,9 +84,8 @@ angular.module('astra.Login')
                             .join(shpKesimpulanPihakTable, ['id_shp_kesimpulan_pihak', 'id_shp_kesimpulan_pihak'])
                             .join(shpTable, ['id_shp', 'id_shp'])
                             .join(suratTugasTable, ['id_surat_tugas', 'id_surat_tugas'])
-                            .join(timSuratTugasTable, ['id_surat_tugas', 'id_surat_tugas'])
-                            .join(userTable, ['id_user', 'id_user'])
                             .get());
+
 
                         var pelanggaranTable = TAFFY(peraturanTable()
                             .join(shpPeraturanTable, ['id_peraturan', 'id_peraturan'])
@@ -123,6 +107,7 @@ angular.module('astra.Login')
 
                         for (let i in perusahaanList) {
                             let temuan = dataTable({ pihak: perusahaanList[i] }).get();
+                            let temuanTable = TAFFY(temuan)
 
                             // Menggabungkan pelanggaran berdasarkan peraturannya
                             let pelanggaranList = [];
@@ -140,10 +125,10 @@ angular.module('astra.Login')
                             // utk tiap-tiap peraturan
                             let pelanggaranPerPerusahaanList = []
 
+                            let totalPelanggaran = 0
                             for (let j in distinctPelanggaran) {
-                                let jumlah = pelanggaranPerPerusahaanTable().filter({ id_peraturan: distinctPelanggaran[j] }).count();
+                                let jumlah = pelanggaranPerPerusahaanTable({id_peraturan: distinctPelanggaran[j]}).count();
                                 let pelanggaran = peraturanTable({ id_peraturan: distinctPelanggaran[j] }).get()[0];
-                                
                                 pelanggaranPerPerusahaanList.push({
                                     grup_peraturan: pelanggaran.grup_peraturan,
                                     id_parent: pelanggaran.id_parent,
@@ -157,11 +142,21 @@ angular.module('astra.Login')
                                     peraturan: pelanggaran.peraturan,
                                     tracking_peraturan: pelanggaran.tracking_peraturan,
                                 })
+
+                                totalPelanggaran += jumlah
                             }
 
-                            pelanggaranPerPerusahaanList = TAFFY(pelanggaranPerPerusahaanList)
+                            let pelanggaranPerPerusahaanTb = TAFFY(pelanggaranPerPerusahaanList)
+                            // console.log(pelanggaranPerPerusahaanTb().sum('jumlah'))
+                            let pemeriksaaan = temuanTable().distinct('id_surat_tugas');
 
-                            temuanByPerusahaan.push({ perusahaan: perusahaanList[i], pelanggaran: pelanggaranPerPerusahaanList().order('level asec, peraturan asec').get() })
+                            temuanByPerusahaan.push({ 
+                                perusahaan: perusahaanList[i], 
+                                pelanggaran: pelanggaranPerPerusahaanTb().get(),
+                                pemeriksaaan: pemeriksaaan,
+                                jumlah_pemeriksaan: pemeriksaaan.length,
+                                jumlah_pelanggaran: totalPelanggaran
+                            })
                         }
 
                         console.log("temuanByPerusahaan")
