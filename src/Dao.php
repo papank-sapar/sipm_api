@@ -502,14 +502,25 @@ class Dao {
             ->fields(array_keys($select))
             ->where('Peraturan', 'not_null', '');
 
-        if ($request->getQueryParam('id_parent')) {
-            $list_peraturan = $list_peraturan->and_where('Parent','=', $request->getQueryParam('id_parent'));
+        /**
+         * START - FILTERING
+         */
+        if ($request->getQueryParam('peraturan')) {
+            $list_peraturan = $list_peraturan->and_where('Peraturan','=', $request->getQueryParam('peraturan'));
+        }
+
+        if ($request->getQueryParam('keterangan')) {
+            $list_peraturan = $list_peraturan->and_where('Keterangan','contains', $request->getQueryParam('keterangan'));
         }
 
         if ($request->getQueryParam('level')) {
             if (intval($request->getQueryParam('level')) > 3) return [];
             $list_peraturan = $list_peraturan->and_where('Level','=', $request->getQueryParam('level'));
         }
+
+        /**
+         * END - FILTERING
+         */
 
         $list_peraturan = Helpers::createLOV($list_peraturan->get(), $select, "ID",['level' => DATA_TYPE_INTEGER, 'id_peraturan' => DATA_TYPE_INTEGER, 'id_parent' => DATA_TYPE_INTEGER]);
         
@@ -539,6 +550,10 @@ class Dao {
             $list_peraturan[$id_peraturan]['tracking_peraturan'] = implode(".", array_reverse($list_tracking_peraturan));
         }
 
+        if ($request->getQueryParam('id_peraturan')) {
+            return $list_peraturan[$request->getQueryParam('id_peraturan')];
+        }
+
         return array_values($list_peraturan);
     }
 
@@ -547,6 +562,7 @@ class Dao {
             'ID' => 'id_pihak',
             'NamaPihak' => 'pihak',
             'JenisPihak' => 'jenis_pihak',
+            'IzinOJK' => 'izin_ojk',
         ];
 
         $list_pihak = $this->sp_client
@@ -574,6 +590,8 @@ class Dao {
             'ID' => 'id_pihak_institusi',
             'MasterProfil' => 'id_pihak',
             'KodePihak' => 'kode_perusahaan',
+            'Npwp' => 'npwp',
+            'AlamatKantor' => 'alamat',
         ];
 
         $list_profil_institusi = $this->sp_client
@@ -650,7 +668,7 @@ class Dao {
             'ID' => 'id_alamat_individu',
             'JenisAlamat' => 'jenis_alamat',
             'Alamat' => 'alamat',
-            'ProfilPihak' => 'id_pihak_individu',
+            'ProfilPihak' => 'id_pihak_individu',   
         ];
 
         $list_alamat_individu = $this->sp_client
@@ -684,6 +702,22 @@ class Dao {
                 ->fields(array_keys($select))
                 ->where('MasterSuratTugas', 'not_null', '');
 
+        /**
+         * START - FILTERING
+         */
+        
+        if ($request->getQueryParam('id_shp')) {
+            $list_shp = $list_shp->and_where('ID','=', $request->getQueryParam('id_shp'));
+        }
+
+        if ($request->getQueryParam('id_surat_tugas')) {
+            $list_shp = $list_shp->and_where('MasterSuratTugas','=', $request->getQueryParam('id_surat_tugas'));
+        }
+
+        /**
+         * END - FILTERING
+         */
+
         $list_shp = Helpers::createResults($list_shp->get(), $select, ['id_shp' => DATA_TYPE_INTEGER, 'id_surat_tugas' => DATA_TYPE_INTEGER]);
 
         if (!count($list_shp)) return [];
@@ -705,17 +739,30 @@ class Dao {
         $list_surat_tugas = $this->sp_client
             ->query('MasterSuratTugas')
             ->fields(array_keys($select));
+
+        /**
+         * START - FILTERING
+         */
         $list_surat_tugas = $list_surat_tugas
             ->where('Direktorat','=', 'DPLE');
 
+        if ($request->getQueryParam('id_surat_tugas')) 
+            $list_surat_tugas = $list_surat_tugas->and_where('ID','=', $request->getQueryParam('id_surat_tugas'));
+
         if ($request->getQueryParam('awal_periode')) 
             $list_surat_tugas = $list_surat_tugas->and_where('AwalPeriode','>=',\Thybag\SharepointApi::dateTime($request->getQueryParam('awal_periode')));
+
         if ($request->getQueryParam('akhir_periode')) 
             $list_surat_tugas = $list_surat_tugas->and_where('AkhirPeriode','<=',\Thybag\SharepointApi::dateTime($request->getQueryParam('akhir_periode')));
+
         if ($request->getQueryParam('nomor_surat_tugas')) 
             $list_surat_tugas = $list_surat_tugas->and_where('NomorSuratTugas','contains', $request->getQueryParam('nomor_surat_tugas'));
+
         if ($request->getQueryParam('lokasi')) 
             $list_surat_tugas = $list_surat_tugas->and_where('Lokasi','=', $request->getQueryParam('lokasi'));
+        /**
+         * END - FILTERING
+         */
         
         $list_surat_tugas = Helpers::createResults($list_surat_tugas->get(), $select, ['id_surat_tugas' => DATA_TYPE_INTEGER, 'id_tema_pengawasan' => DATA_TYPE_INTEGER, 'id_jenis_pemeriksaan' => DATA_TYPE_INTEGER]);
         
@@ -738,6 +785,23 @@ class Dao {
                 ->query('DPLEKesimpulanPihak')
                 ->fields(array_keys($select))
                 ->where('DPLEshp', 'not_null', '');
+        
+        /**
+         * START - FILTERING
+         */
+        
+        if ($request->getQueryParam('id_shp_kesimpulan_pihak')) 
+            $list_shp_kesimpulan_pihak = $list_shp_kesimpulan_pihak->and_where('ID','=', $request->getQueryParam('id_shp_kesimpulan_pihak'));
+
+        if ($request->getQueryParam('id_shp')) 
+            $list_shp_kesimpulan_pihak = $list_shp_kesimpulan_pihak->and_where('DPLEshp','=', \Thybag\SharepointApi::lookup($request->getQueryParam('id_shp'), 'SHP-123'));
+
+        if ($request->getQueryParam('temuan')) 
+            $list_shp_kesimpulan_pihak = $list_shp_kesimpulan_pihak->and_where('Temuan','contains', $request->getQueryParam('temuan'));
+
+        /**
+         * END - FILTERING
+         */
 
         $list_shp_kesimpulan_pihak = Helpers::createResults($list_shp_kesimpulan_pihak->get(), $select, ['id_shp_kesimpulan_pihak' => DATA_TYPE_INTEGER, 'id_shp' => DATA_TYPE_INTEGER, 'id_jenis_rekomendasi' => DATA_TYPE_INTEGER]);
 
