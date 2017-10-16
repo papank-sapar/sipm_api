@@ -602,6 +602,16 @@ class Dao {
         if ($request->getQueryParam('kode_perusahaan')) {
             $list_profil_institusi = $list_profil_institusi->and_where('KodePihak','=', $request->getQueryParam('kode_perusahaan'));
         }
+
+        if ($request->getQueryParam('direktorat')) {
+            if (strtolower($request->getQueryParam('direktorat')) === 'lain') {
+                $list_profil_institusi = $list_profil_institusi->and_where('Direktorat_Lain','=', true);   
+            } else if (strtolower($request->getQueryParam('direktorat')) === 'dple' ||
+                strtolower($request->getQueryParam('direktorat')) === 'dpiv' ||
+                strtolower($request->getQueryParam('direktorat')) === 'dpkr'){
+                $list_profil_institusi = $list_profil_institusi->and_where('Direktorat_' . strtoupper($request->getQueryParam('direktorat')),'=', true);    
+            }
+        }
     
         $list_profil_institusi = Helpers::createResults($list_profil_institusi->get(), $select, ['id_pihak_institusi' => DATA_TYPE_INTEGER, 'id_pihak' => DATA_TYPE_INTEGER]);
 
